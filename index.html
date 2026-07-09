@@ -6,6 +6,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--txt);min-
 *:focus-visible{outline:2px solid var(--forM);outline-offset:2px}
 button,input,textarea,select{font-family:'DM Sans',sans-serif;cursor:pointer}
 .serif{font-family:'Cormorant Garamond',serif}
+/* Readability: scale the whole app up on larger screens; phones keep the tuned mobile sizing */
+@media (min-width:700px){#root{zoom:1.2}}
 
 /* HEADER */
 .hdr{background:linear-gradient(158deg,#254A32 0%,var(--for) 52%,#142819 100%);padding:16px 16px 0;position:relative;overflow:hidden;box-shadow:var(--shHdr)}
@@ -119,6 +121,16 @@ textarea.inp{resize:vertical;min-height:70px;line-height:1.6}
 .b-amt{font-weight:500}
 .b-paid{font-size:11px;color:var(--ok)}
 .b-owing{font-size:11px;color:var(--amb)}
+
+/* STAGE SUB-SECTIONS (collapsible) */
+details.sec{background:var(--sur);border:1px solid var(--bor);border-radius:10px;margin-bottom:8px;box-shadow:var(--shS);overflow:hidden}
+details.sec>summary{list-style:none;cursor:pointer;padding:11px 13px;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--for);user-select:none;transition:background .15s}
+details.sec>summary::-webkit-details-marker{display:none}
+details.sec>summary::after{content:'▾';margin-left:auto;color:var(--txL);font-size:12px;transition:transform .2s}
+details.sec[open]>summary::after{transform:rotate(180deg)}
+details.sec>summary:hover{background:var(--surB)}
+details.sec[open]>summary{border-bottom:1px solid var(--bor)}
+.secbody{padding:11px 13px 3px}
 </style>
 
 <div id="root"></div>
@@ -134,10 +146,18 @@ const FLIGHTS = {
 const STAGES = [
   {day:1,date:"13 Sep",from:"Les Houches",to:"Les Contamines",dist:"~18 km",gain:"+~1,050 m",loss:"−~1,050 m",time:"6–8 hrs",alt:"2,120 m",country:"FR",diff:3,
    notes:"Take the Bellevue Cable Car from Les Houches. Today (13 Sep) is its final day of the 2026 season. Beautiful ridge walk through alpine hamlets via Col de Voza.",
-   start:"The trek starts in Les Houches, ~6 km down-valley from the Chamonix apartment (Aiguille Verte). Easiest way: Mont Blanc Express train from Chamonix-Mont-Blanc station to Les Houches (roughly hourly, short ride), FREE with the Carte d'Hôte guest card that Aiguille Verte gives you on arrival. Get off at Les Houches, or the Viaduc Sainte-Marie request halt which is closer to the lift. The Bellevue cable car base station is at 61 place de la Fruitière, a short walk (or the free village navette, Le Mulet) at the far end of town, right on the TMB. Alternatives: Chamonix Bus to Les Houches (discounted with the guest card, not free) or a taxi (~10–15 min, ~€25). Cable car runs daily 07:30–17:30 and 13 Sep is its LAST day of the season, so take an early train and aim to be at the base by ~07:20 for the first cabin (one ~20-person cabin, queues build fast). Pedestrian fare ~€18.90 one-way (you only need the ride up). Confirm the train timetable and that the lift is running (weather-dependent) the evening before.",
+   start:[
+     {l:"📍 Start point —",d:"the trek begins in Les Houches, ~6 km down-valley from the Chamonix apartment (Aiguille Verte)."},
+     {l:"🚆 Getting there —",d:"Mont Blanc Express train from Chamonix-Mont-Blanc station to Les Houches (roughly hourly, short ride), FREE with the Carte d'Hôte guest card that Aiguille Verte gives you on arrival. Get off at Les Houches, or the Viaduc Sainte-Marie request halt (closer to the lift)."},
+     {l:"🚡 Cable-car base —",d:"the Bellevue base station is at 61 place de la Fruitière, a short walk (or the free village navette, Le Mulet) at the far end of town, right on the TMB."},
+     {l:"🔀 Alternatives —",d:"Chamonix Bus to Les Houches (discounted with the guest card, not free), or a taxi (~10–15 min, ~€25)."},
+     {l:"⏰ Timing —",d:"the cable car runs daily 07:30–17:30, and 13 Sep is its LAST day of the season. Take an early train and aim to be at the base by ~07:20 for the first cabin (one ~20-person cabin, queues build fast)."},
+     {l:"🎟 Fare —",d:"pedestrian ~€18.90 one-way (you only need the ride up)."},
+     {l:"✅ Confirm —",d:"the train timetable, and that the lift is running (weather-dependent), the evening before."}
+   ],
    meals:{b:"Chamonix hotel/café",l:"Buy on trail or in Chamonix before departure",d:"⚠️ Gaï Soleil is ROOM ONLY, dinner not included. Add 25€pp via Maison Noël (32 m), or eat in village (La Table d'Hôtes Savoie 400 m, Le Carnotzet 420 m)"},
    physio:"Good settling-in day. Flat valley sections let you gauge ankle and hip feel early. Warm up hip flexors before departure. Poles optional today.",
-   weather:"Bellevue cable car may be shut in high wind, take the marked forest route over Col de Voza on foot instead (sheltered, well-signed). If it is truly storming, skip the walk: Mont Blanc Express train Les Houches → Le Fayet, then SAT bus to Les Contamines.",
+   weather:"Bellevue cable car may be shut in high wind, take the marked forest route over Col de Voza on foot instead (sheltered, well-signed). ⚠️ Without the cable car you climb the whole way out of Les Houches on foot: roughly an EXTRA +800 m of ascent over ~4–5 km (about 2–2.5 hrs added), from Les Houches (1,007 m) up to the Bellevue plateau / Col de Voza. Start earlier and pace it. If it is truly storming, skip the walk entirely: Mont Blanc Express train Les Houches → Le Fayet, then SAT bus to Les Contamines.",
    escape:"Easiest exit of the trek. From Les Houches or Col de Voza, drop back to Les Houches → Mont Blanc Express to Le Fayet → SAT bus (Les Contamines line, ~every 2 hrs). Or a direct taxi Les Houches / St-Gervais → Gaï Soleil (~€60–70).",
    skip:"The 800 m climb out of Les Houches is already skipped by the Bellevue cable car (its final day of the season is 13 Sep, so it's running). Nothing else is dull enough to skip.",
    plans:[{grade:"Standard",tag:"⭐ TMB classic",label:"Planned: Bellevue cable car → Col de Voza",dist:"≈16 km",gain:"+~650 m",loss:"−~630 m",time:"5–7 hrs",why:"The standard, gentle line: ride the Bellevue cable car up, cross Col de Voza (1,653 m) and descend through alpine hamlets to Les Contamines."},{grade:"Harder",tag:"📸 Most scenic",pref:true,label:"Col de Tricot variant",dist:"≈18 km (+~2 km)",gain:"+~1,050 m",loss:"−~1,050 m",time:"6–8 hrs",why:"Same start: take the Bellevue cable car up, then branch off the Bellevue plateau (before Col de Voza) down to the Bionnassay glacier torrent, cross it on a swaying suspension bridge, and climb over Col de Tricot (2,120 m) for wilder, quieter high scenery, dropping via Miage and Le Truc to Les Contamines. Longer and hillier, so start earlier."}],
@@ -426,7 +446,7 @@ const CAMPING = [
   {day:10,date:"22 Sep",loc:"Chamonix",yourStay:"Chamonix town hotel (TO BOOK)",camp:"❌ No camping in Chamonix, must book hostel or gîte dorm",addr:"",web:"",open:"",cost:"",fac:"",dist:"~0–500 m, all in town centre",din:"✅ YES, Celebrate!",dinNote:"Final night. Book a celebration dinner together. You've all earned it. Book well ahead, Chamonix fills up.",note:"Companion options: Gîte le Vagabond or Auberge de Jeunesse are the best budget options."},
 ];
 
-const TABS=[{id:"overview",i:"⛰",l:"Overview"},{id:"stages",i:"🗺",l:"Stages"},{id:"totals",i:"📊",l:"Totals"},{id:"stays",i:"🏨",l:"Stays"},{id:"gear",i:"🎒",l:"Gear"},{id:"todos",i:"✅",l:"To-Do"},{id:"camping",i:"🏕",l:"Camping"},{id:"split",i:"🧾",l:"Expenses"}];
+const TABS=[{id:"overview",i:"⛰",l:"Overview"},{id:"stages",i:"🗺",l:"Stages"},{id:"totals",i:"📊",l:"Totals"},{id:"stays",i:"🏨",l:"Stays"},{id:"gear",i:"🎒",l:"Gear"},{id:"todos",i:"✅",l:"To-Do"},{id:"camping",i:"🏕",l:"Camping"},{id:"split",i:"🧾",l:"Expenses"},{id:"training",i:"🏋️",l:"Training"}];
 const DC=["","Easy","Moderate","Moderate","Hard","Very Hard"];
 const DK=["","#3D7A5A","#A86B18","#A86B18","#9B2525","#6B0000"];
 const CC={FR:"var(--fr)",IT:"var(--it)",CH:"var(--ch)"};
@@ -467,7 +487,7 @@ function app(){
   <div class="pbar"><div class="pfill" style="width:${pct()}%"></div></div>
   <nav>${TABS.map(t=>`<button class="nb${S.tab===t.id?" on":""}" data-tab="${t.id}">${t.i} ${t.l}</button>`).join("")}</nav>
 </div>
-<main>${{overview:rOverview,stages:rStages,totals:rTotals,stays:rStays,gear:rGear,todos:rTodos,camping:rCamping,split:rSplit}[S.tab]()}</main>`;}
+<main>${{overview:rOverview,stages:rStages,totals:rTotals,stays:rStays,gear:rGear,todos:rTodos,camping:rCamping,split:rSplit,training:rTraining}[S.tab]()}</main>`;}
 
 // ── OVERVIEW ──────────────────────────────────────────────────────────────────
 function rOverview(){
@@ -613,20 +633,19 @@ function rStages(){
       <div class="dcell"><div class="l">Max altitude</div><div class="v">${s.alt}</div></div>`}
     </div>
     <div style="font-size:13px;line-height:1.65;color:var(--txM);margin-bottom:10px">${s.notes}</div>
-    ${s.start?`<div class="nbox" style="background:#EAF1FB;border:1px solid #B9CDE8"><div class="nh" style="color:var(--fr)">🚆 Getting to the start</div><div class="nb2">${esc(s.start)}</div></div>`:""}
-    ${s.restday?`<div style="font-size:11px;font-weight:600;color:var(--txL);margin:12px 0 6px">🧖 REST DAY IN COURMAYEUR, WHAT TO DO</div>${s.restday.map(r=>`<div class="nbox" style="background:var(--surB)"><div class="nh" style="color:var(--for)">${esc(r.t)}</div><div class="nb2">${esc(r.d)}</div></div>`).join("")}`:""}
+    ${s.start?`<details class="sec"><summary>🚆 Getting to the start</summary><div class="secbody">${Array.isArray(s.start)?s.start.map((b,i)=>`<div style="padding:7px 0;${i?"border-top:1px solid var(--bor);":""}font-size:12px;line-height:1.55"><strong style="color:var(--txt)">${esc(b.l)}</strong> <span style="color:var(--txM)">${esc(b.d)}</span></div>`).join(""):`<div class="nb2">${esc(s.start)}</div>`}</div></details>`:""}
+    ${s.restday?`<details class="sec"><summary>🧖 Rest day in Courmayeur — what to do</summary><div class="secbody">${s.restday.map(r=>`<div class="nbox" style="background:var(--surB)"><div class="nh" style="color:var(--for)">${esc(r.t)}</div><div class="nb2">${esc(r.d)}</div></div>`).join("")}</div></details>`:""}
     ${!s.rest?`<a href="${atUrl}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:var(--forM);text-decoration:none;border:1px solid var(--bor);background:var(--surB);border-radius:7px;padding:6px 11px;margin-bottom:10px">🥾 View route on AllTrails →</a>`:""}
-    ${!s.rest&&ELEV[s.day]?`<div style="background:var(--surB);border:1px solid var(--bor);border-radius:8px;padding:9px 11px 5px;margin-bottom:10px">
-      <div style="font-size:10px;font-weight:600;color:var(--txL);letter-spacing:.5px;margin-bottom:1px">ELEVATION PROFILE <span style="font-weight:400;text-transform:none">· approximate</span></div>
+    ${!s.rest&&ELEV[s.day]?`<details class="sec"><summary>📈 Elevation profile <span style="font-weight:400;color:var(--txL);font-size:11px">· approximate</span></summary><div class="secbody" style="padding-bottom:8px">
       ${elevSVG(s.day)}
       <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;margin-top:3px"><span style="color:var(--ok);font-weight:600">▲ ${s.gain}</span><span style="color:var(--txL);font-size:10px">Accurate track on AllTrails</span><span style="color:var(--it);font-weight:600">▼ ${s.loss}</span></div>
-    </div>`:""}
+    </div></details>`:""}
     ${s.warns.length?`<div class="warn-box"><div class="w">${s.warns.join("<br>")}</div></div>`:""}
-    ${s.skip?`<div class="nbox" style="background:#FFF9EE;border:1px solid var(--ambL)"><div class="nh" style="color:var(--amb)">✂️ Dull stretch you can skip</div><div class="nb2">${esc(s.skip)}</div></div>`:""}
-    ${s.plans.length?`<div style="font-size:11px;font-weight:600;color:var(--txL);margin:12px 0 5px">${s.plans.length>1?"ROUTE OPTIONS":"THE ROUTE"}</div>
-    ${s.plans.length>1?`<div style="font-size:11px;color:var(--txL);margin-bottom:7px">All finish at the same booked accommodation. <span style="color:var(--for);font-weight:600">⭐ classic</span> · <span style="color:var(--amb);font-weight:600">📸 most scenic</span> · <span style="color:var(--for);font-weight:600">✓ your pick</span>.</div>`:''}
-    ${s.plans.map(p=>`<div class="nbox" style="background:var(--surB)${p.pref?';border:1.5px solid var(--for)':''}"><div class="nh" style="color:${p.grade==='Easier'?'var(--ok)':p.grade==='Harder'?'var(--amb)':'var(--sto)'}">${p.grade==='Easier'?'▽':p.grade==='Harder'?'△':'●'} ${esc(p.grade)}${p.label?' · '+esc(p.label):''}${p.pref?` <span style="font-size:9px;padding:1px 6px;border-radius:4px;background:var(--for);color:#fff;font-weight:700">✓ PICK</span>`:''}</div>${p.tag?`<div style="margin:3px 0 0"><span style="font-size:9px;padding:1px 6px;border-radius:4px;background:${/scenic/i.test(p.tag)?'#FBF0DA':'#E6F3EC'};color:${/scenic/i.test(p.tag)?'var(--amb)':'var(--for)'};font-weight:600">${esc(p.tag)}</span></div>`:''}${[p.dist?'📏 '+esc(p.dist):'',p.gain?'▲ '+esc(p.gain):'',p.loss?'▼ '+esc(p.loss):'',p.time?'⏱ '+esc(p.time):''].filter(Boolean).length?`<div style="font-size:11px;color:var(--txL);margin:3px 0;line-height:1.5">${[p.dist?'📏 '+esc(p.dist):'',p.gain?'▲ '+esc(p.gain):'',p.loss?'▼ '+esc(p.loss):'',p.time?'⏱ '+esc(p.time):''].filter(Boolean).join(' · ')}</div>`:''}<div class="nb2">${esc(p.why)}</div></div>`).join("")}`:""}
-    <div style="font-size:11px;font-weight:600;color:var(--txL);margin:12px 0 6px">MEALS</div>
+    ${s.skip&&s.day!==1?`<details class="sec"><summary>✂️ Dull stretch you can skip</summary><div class="secbody"><div class="nb2">${esc(s.skip)}</div></div></details>`:""}
+    ${s.plans.filter(p=>!p.pref).length?`<details class="sec"><summary>🧭 Other route options</summary><div class="secbody">
+    <div style="font-size:11px;color:var(--txL);margin-bottom:7px">Alternatives to your planned route (all finish at the same booked accommodation). <span style="color:var(--for);font-weight:600">⭐ classic</span> · <span style="color:var(--amb);font-weight:600">📸 most scenic</span>.</div>
+    ${s.plans.filter(p=>!p.pref).map(p=>`<div class="nbox" style="background:var(--surB)"><div class="nh" style="color:${p.grade==='Easier'?'var(--ok)':p.grade==='Harder'?'var(--amb)':'var(--sto)'}">${p.grade==='Easier'?'▽':p.grade==='Harder'?'△':'●'} ${esc(p.grade)}${p.label?' · '+esc(p.label):''}</div>${p.tag?`<div style="margin:3px 0 0"><span style="font-size:9px;padding:1px 6px;border-radius:4px;background:${/scenic/i.test(p.tag)?'#FBF0DA':'#E6F3EC'};color:${/scenic/i.test(p.tag)?'var(--amb)':'var(--for)'};font-weight:600">${esc(p.tag)}</span></div>`:''}${[p.dist?'📏 '+esc(p.dist):'',p.gain?'▲ '+esc(p.gain):'',p.loss?'▼ '+esc(p.loss):'',p.time?'⏱ '+esc(p.time):''].filter(Boolean).length?`<div style="font-size:11px;color:var(--txL);margin:3px 0;line-height:1.5">${[p.dist?'📏 '+esc(p.dist):'',p.gain?'▲ '+esc(p.gain):'',p.loss?'▼ '+esc(p.loss):'',p.time?'⏱ '+esc(p.time):''].filter(Boolean).join(' · ')}</div>`:''}<div class="nb2">${esc(p.why)}</div></div>`).join("")}</div></details>`:""}
+    <details class="sec"><summary>🍽 Meals &amp; food stops</summary><div class="secbody">
     <div style="background:var(--surB);border-radius:8px;padding:2px 10px;margin-bottom:10px">
       <div class="mrow"><div class="mico" style="background:var(--amb)">B</div><div style="font-size:12.5px"><strong style="color:var(--txL);font-size:10px;display:block">BREAKFAST</strong>${esc(s.meals.b)}</div></div>
       <div class="mrow"><div class="mico" style="background:var(--forM)">L</div><div style="font-size:12.5px"><strong style="color:var(--txL);font-size:10px;display:block">LUNCH</strong>${esc(s.meals.l)}</div></div>
@@ -637,9 +656,9 @@ function rStages(){
       <div style="font-size:11.5px;color:var(--txM);margin-bottom:7px;padding:7px 9px;background:${REFRESH[s.day].lunch.indexOf('⚠️')===0?'#FFF4EC':'var(--sur)'};border:1px solid ${REFRESH[s.day].lunch.indexOf('⚠️')===0?'#E8A06A':'var(--bor)'};border-radius:6px">🥪 <strong>Lunch today:</strong> ${esc(REFRESH[s.day].lunch)}</div>
       ${REFRESH[s.day].stops.map(t=>`<div style="padding:6px 0;border-bottom:1px solid var(--bor)"><div style="font-size:12.5px;font-weight:500">${esc(t.n)} <span style="font-weight:400;color:var(--txL);font-size:11px">· ${esc(t.at)}</span> ${t.meal?`<span style="font-size:9px;padding:1px 5px;border-radius:4px;background:#E6F3EC;color:var(--ok);font-weight:600">🍴 LUNCH</span>`:`<span style="font-size:9px;padding:1px 5px;border-radius:4px;border:1px solid var(--bor);color:var(--txL);font-weight:600">☕ SNACK</span>`}</div><div style="font-size:11.5px;color:var(--txM);margin-top:2px">${esc(t.f)}</div><div style="font-size:10.5px;color:var(--txL);margin-top:1px">🕐 ${esc(t.o)}${t.route?` · 🧭 ${esc(t.route)}`:''}</div></div>`).join("")}
       <div style="font-size:11.5px;color:var(--txM);margin-top:7px">🛒 ${esc(REFRESH[s.day].buy)}</div>
-    </div>`:""}
-    <div class="nbox" style="background:#EDF2FF"><div class="nh" style="color:var(--fr)">⚕ Physio plan</div><div class="nb2">${s.physio}</div></div>
-    ${st?`<div style="font-size:11px;font-weight:600;color:var(--txL);margin:12px 0 6px">ACCOMMODATION</div>
+    </div>`:""}</div></details>
+    ${s.physio?`<details class="sec"><summary>⚕ Physio plan</summary><div class="secbody"><div class="nbox" style="background:#EDF2FF;margin-bottom:0"><div class="nb2">${s.physio}</div></div></div></details>`:""}
+    ${st?`<details class="sec"><summary>🏨 Accommodation</summary><div class="secbody">
     <div style="background:var(--sur);border:1px solid var(--bor);border-radius:8px;padding:10px 12px;margin-bottom:10px">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:5px">
         <div><div style="font-size:13px;font-weight:600">${esc(st.place)}</div><div style="font-size:11px;color:var(--txL);margin-top:1px">${esc(st.loc)} · ${esc(inf.room||st.type)}</div></div>
@@ -654,10 +673,10 @@ function rStages(){
       ${inf.shower?`<div style="display:flex;gap:8px;padding:5px 0;border-bottom:1px solid var(--bor);font-size:12px"><div style="min-width:84px;color:var(--txL);flex-shrink:0">🚿 Shower</div><div style="flex:1">${esc(inf.shower)}</div></div>`:""}
       ${inf.checkin?`<div style="display:flex;gap:8px;padding:5px 0;font-size:12px"><div style="min-width:84px;color:var(--txL);flex-shrink:0">🕒 Check-in</div><div style="flex:1">${esc(inf.checkin)}</div></div>`:""}
       <div style="font-size:11px;color:var(--txL);margin-top:8px">Full booking details in the Stays tab →</div>
-    </div>`:""}
-    <div style="font-size:11px;font-weight:600;color:var(--txL);margin:12px 0 6px">CONTINGENCY PLANS</div>
+    </div></div></details>`:""}
+    ${(s.weather||s.escape)?`<details class="sec"><summary>☔ Contingency — weather &amp; escape</summary><div class="secbody">
     ${s.weather?`<div class="nbox" style="background:#EAF1FB;border:1px solid #B9CDE8"><div class="nh" style="color:var(--fr)">☔ Bad weather</div><div class="nb2">${esc(s.weather)}</div></div>`:""}
-    ${s.escape?`<div class="nbox" style="background:#FFF0F0;border:1px solid #E8B0B0"><div class="nh" style="color:var(--it)">🚑 Injury · exit to next stay</div><div class="nb2">${esc(s.escape)}</div></div>`:""}
+    ${s.escape?`<div class="nbox" style="background:#FFF0F0;border:1px solid #E8B0B0"><div class="nh" style="color:var(--it)">🚑 Injury · exit to next stay</div><div class="nb2">${esc(s.escape)}</div></div>`:""}</div></details>`:""}
   </div>`:""}
 </div>`}).join("");}
 
@@ -931,6 +950,223 @@ function rSplit(){
   </div>
   <div style="font-size:11px;font-weight:600;color:var(--txL);margin:4px 0 6px;letter-spacing:.5px">EACH ACCOMMODATION, WHAT'S PAID &amp; WHAT'S INCLUDED</div>
   ${cards}`;
+}
+
+// ── BIND ──────────────────────────────────────────────────────────────────────
+// ── TRAINING (read-only reference, imported from tmb-training) ────────────────
+const TV=q=>"https://www.youtube.com/results?search_query="+encodeURIComponent(q);
+const TCS={
+  menstrual:{lbl:"Menstrual",dot:"#D45757",bg:"#FCEDED",tx:"#7E2A2A",bd:"#F3C9C9"},
+  follicular:{lbl:"Follicular",dot:"#2E9E5B",bg:"#E6F6EC",tx:"#1C5C36",bd:"#BFE6CC"},
+  ovulatory:{lbl:"Ovulatory",dot:"#E0941A",bg:"#FCF3E0",tx:"#7A5210",bd:"#F0DCA8"},
+  luteal:{lbl:"Luteal",dot:"#7E62C4",bg:"#F0EBFA",tx:"#43307A",bd:"#D6C9F0"}
+};
+const TPH={p0:{lbl:"Phase 0",dot:"#94A3B8"},p1:{lbl:"Phase 1 · Base",dot:"#3B82F6"},p2:{lbl:"Phase 2 · Trek Sim",dot:"#F97316"},tp:{lbl:"Taper",dot:"#10B981"}};
+const TDRIVE={push:{lbl:"PUSH",col:"#2E9E5B"},build:{lbl:"BUILD",col:"#3B82F6"},ease:{lbl:"EASE",col:"#7E62C4"},rest:{lbl:"REST",col:"#8A97A8"}};
+const TZONES=[
+  {n:"Z1 Recovery",bpm:"116-129",col:"#5C9B72",d:"Full conversation · recovery walks, easy treadmill"},
+  {n:"Z2 Aerobic base",bpm:"129-143",col:"#2E9E5B",d:"Conversational · most training, treadmill/stair base, easy hiking"},
+  {n:"Z3 Tempo",bpm:"143-156",col:"#E0941A",d:"Short sentences only · sustained climbs"},
+  {n:"Z4 Threshold",bpm:"156-170",col:"#D45757",d:"A few words · incline intervals, hard stair"},
+  {n:"Z5 Max",bpm:"170-183",col:"#7E2A2A",d:"Cannot talk · rarely needed for trek prep"}
+];
+const TCYCLE=[
+  {ph:"menstrual",hd:"Menstrual · period (~5 days)",push:"EASE / REST",txt:"Energy and iron dip. Keep it gentle — easy walks, mobility, light movement, and protect the day before + first days. The best window to place a holiday, travel or taper."},
+  {ph:"follicular",hd:"Follicular · rising (~day 6-13)",push:"PUSH",txt:"Estrogen climbing, strength and recovery good. Your best window to build volume, add load, and schedule big hikes and hard efforts."},
+  {ph:"ovulatory",hd:"Ovulatory · peak (~day 14-16)",push:"PUSH (peak)",txt:"Peak power and drive — ideal for your single hardest session or biggest hike. Ligaments are a touch laxer, so stay sharp and controlled on technical descents."},
+  {ph:"luteal",hd:"Luteal (~day 17-28)",push:"BUILD → EASE",txt:"Energy tapers, perceived effort and core temp rise, PMS can show late. Steady work early, then ease toward the period. Hydrate hard and protect sleep."}
+];
+const TEX={
+  ankle:[
+    {n:"Balance and reach",s:"3×5",c:"Stand tall on one leg, reach the other foot as far as you can and return controlled.",y:"single leg balance and reach exercise physio"},
+    {n:"Seated resisted ankle eversion",s:"3×12",c:"Band round the foot, turn the sole outward slowly against the band.",y:"seated resisted ankle eversion exercise"},
+    {n:"Calf raise with resisted inversion",s:"3×10",c:"Band pulls the foot inward — resist it as you rise onto your toes.",y:"calf raise resisted inversion physio"},
+    {n:"Toe curl with towel",s:"3×1",c:"Scrunch a towel toward you using only your toes (intrinsic foot strength).",y:"towel toe curl intrinsic foot exercise"}
+  ],
+  hip:[
+    {n:"Side plank on knees + clam shell",s:"4×1 · 30s hold",c:"Pelvis still, open the top knee like a clam while you hold the side plank.",y:"side plank on knees with clamshell exercise"},
+    {n:"Single-leg bridge",s:"3×8",c:"Drive through the heel, squeeze the glute, keep ribs down.",y:"single leg glute bridge tutorial"},
+    {n:"Resisted fire hydrants",s:"3×8",c:"Lift the knee out to the side, keep the pelvis level — no twisting.",y:"resisted fire hydrant exercise"},
+    {n:"Kettlebell squat, bench behind",s:"3×10",c:"Sit back and lightly touch the bench, drive up through the heels.",y:"kettlebell box squat to bench tutorial"},
+    {n:"Knee extension machine (VMO)",s:"3×10",c:"Control the lowering, full lockout at the top.",y:"knee extension machine proper form"},
+    {n:"Seated hamstring curl",s:"3×10 · 1s hold",c:"Squeeze and pause at the bottom of each rep.",y:"seated hamstring curl machine tutorial"},
+    {n:"Lunge with medial rotation resistance",s:"3×8",c:"Band pulls the knee inward — resist and keep it tracking over the foot.",y:"lunge with rotation resistance band physio"},
+    {n:"Hip 90/90",s:"2×20",c:"Rotate both knees floor-to-floor, sit tall through the spine.",y:"90 90 hip mobility exercise tutorial"},
+    {n:"Elevated pigeon",s:"1×3 · 30s",c:"Front shin elevated, square the hips, breathe into the glute.",y:"elevated pigeon pose stretch tutorial"},
+    {n:"Couch stretch (hip flexor + quad)",s:"1×3 · 30s",c:"Back foot up on a couch/wall, tuck the pelvis and squeeze the glute.",y:"couch stretch hip flexor quad tutorial"}
+  ],
+  warmup:[
+    {n:"World's greatest stretch",s:"3-5 / side",c:"Lunge, hand to floor, rotate the top arm to the sky.",y:"worlds greatest stretch tutorial"},
+    {n:"Toe touch to deep squat",s:"5-8",c:"Hinge to touch toes, then sink into a deep squat and stand.",y:"toe touch to deep squat mobility drill"},
+    {n:"90/90 hip switch",s:"5-8 / side",c:"Rotate both knees between sides, chest tall.",y:"90 90 hip switch mobility"},
+    {n:"Trunk rotations",s:"8-10 / side",c:"Loose, controlled rotation to warm the spine.",y:"standing trunk rotation warm up"},
+    {n:"Banded shoulder work",s:"8-10 each",c:"Dislocations, pull-aparts, upright row, face pull.",y:"banded shoulder warm up dislocations pull aparts face pull"}
+  ],
+  fullA:[
+    {n:"A1) ATG split squat",s:"BW · 3×10",c:"Long stance, knee travels over the toes, control the depth.",y:"ATG split squat tutorial knees over toes"},
+    {n:"A2) Low row",s:"30kg · ×10",c:"Squeeze the shoulder blades, elbows drive back.",y:"seated cable low row proper form"},
+    {n:"B1) Poliquin step-up",s:"BW · 3×10",c:"Low step, no push-off from the back leg — front leg does the work.",y:"poliquin step up tutorial"},
+    {n:"B2) Half-kneeling DB press",s:"5kg · 3×10",c:"Ribs down, press straight overhead, no arching.",y:"half kneeling dumbbell shoulder press tutorial"},
+    {n:"C1) Tibialis raise",s:"4kg · 3×10",c:"Heels planted, pull the toes up toward the shin against load.",y:"tibialis raise tutorial"},
+    {n:"C2) Farmers carry",s:"8kg · 3×25m",c:"Tall posture, braced core, steady even steps.",y:"farmers carry tutorial form"}
+  ],
+  circuit:[
+    {n:"Wall squat",s:"3×6-8",c:"Back flat on the wall, thighs to parallel.",y:"wall squat exercise tutorial"},
+    {n:"Squat with band",s:"4×12",c:"Band round the knees — push them out on every rep.",y:"banded squat tutorial"},
+    {n:"Box step-up (each leg)",s:"3×12",c:"Drive through the whole foot, control the step down.",y:"box step up exercise tutorial"},
+    {n:"Stationary lunge (each)",s:"4×10",c:"Torso tall, control the descent, drive up.",y:"stationary lunge tutorial"},
+    {n:"Plank hold",s:"To failure",c:"Straight line head-to-heels, no hip sag.",y:"forearm plank proper form"},
+    {n:"Bear crawl",s:"5×50ft",c:"Hips low, knees hover an inch off the floor.",y:"bear crawl exercise tutorial"},
+    {n:"Shoulder opener",s:"3×5-7",c:"Slow banded pass-through, control the range.",y:"banded shoulder opener tutorial"}
+  ],
+  travel:[
+    {n:"Slow-tempo squat",s:"3×10-12 · 3-5s down",c:"Sit back like into a chair, control the descent, drive up.",y:"slow eccentric bodyweight squat tutorial"},
+    {n:"Eccentric step-down",s:"3×8-10 / leg",c:"Stand on a step, lower the opposite heel to the floor slowly.",y:"eccentric step down exercise knee tutorial"},
+    {n:"Reverse lunge",s:"3×8-10 / leg",c:"Step back, drop the back knee over 2-3s, torso tall.",y:"reverse lunge bodyweight proper form"},
+    {n:"ATG split squat",s:"BW · 3×10 / leg",c:"Long stance, front knee travels forward over the toes, control the depth — knee-friendly strength.",y:"ATG split squat tutorial knees over toes"},
+    {n:"Bulgarian split squat (chair/bed)",s:"3×8-10 / leg",c:"Rear foot up, most of the weight on the front heel.",y:"bulgarian split squat bodyweight tutorial"},
+    {n:"Single-leg glute bridge",s:"3×10-12 / leg",c:"Drive the heel, squeeze the glute at the top, ribs down.",y:"single leg glute bridge tutorial"},
+    {n:"Single-leg RDL",s:"3×8-10 / leg",c:"Hinge at the hip, flat back, reach the chest forward as the leg lifts.",y:"single leg deadlift bodyweight balance tutorial"},
+    {n:"Calf raise, slow lower",s:"3×15-20",c:"Full height up, 3s lower — drop below level on a step if you can.",y:"single leg calf raise eccentric tutorial"},
+    {n:"Front + side plank",s:"2-3 × 20-40s each",c:"Straight line, no hip sag or rotation.",y:"front and side plank core tutorial"},
+    {n:"Wall sit",s:"2-3 × 30-60s",c:"Thighs parallel, back flat, breathe.",y:"wall sit exercise tutorial"}
+  ],
+  descent:[
+    {n:"Eccentric step-down",s:"3×8-12 / leg · 3-5s",c:"Knee tracks over the 2nd toe, don't let it cave inward.",y:"eccentric step down downhill hiking prep"},
+    {n:"Tempo squat (3-5s down)",s:"3×8-10",c:"Control every inch of the descent, no bouncing.",y:"tempo squat eccentric downhill training"},
+    {n:"Reverse lunge, slow lower",s:"3×8-10 / leg",c:"Lower the back knee toward the floor over 2-4s.",y:"walking lunge slow eccentric hiking"},
+    {n:"Spanish squat / wall sit",s:"3 × 30-45s",c:"Shins vertical, weight through the heels — knee-friendly.",y:"spanish squat knee exercise tutorial"},
+    {n:"Clamshell + monster walks",s:"3×12-15 / 2×10 steps",c:"Pelvis still — this glute-med work controls the knee on descents.",y:"glute med clamshell monster walk knee stability"},
+    {n:"Step-ups, slow lower",s:"3×10 / leg",c:"Drive up through the whole foot, lower under control.",y:"step up exercise eccentric hiking legs"},
+    {n:"Downhill walking practice",s:"5-10 min slope",c:"Short steps, soft knees, let the quads absorb.",y:"downhill walking technique knee saving"}
+  ],
+  legten:[
+    {n:"Foam roll calf (gastroc + soleus)",s:"60-90s / calf",c:"Slow rolls, pause and breathe on tender spots — roll upper AND lower calf.",y:"how to foam roll calves soleus tutorial"},
+    {n:"Ball / bottle SMR (travel)",s:"60-90s / area",c:"No roller? Roll the calf or quad on a firm ball or bottle on the floor.",y:"calf massage with ball no foam roller"},
+    {n:"Wall calf stretch (straight + bent)",s:"30-45s ×2 / leg",c:"Heel down for the calf; bend the knee to drop into the soleus.",y:"wall calf and soleus stretch tutorial"},
+    {n:"Couch / quad stretch",s:"30-45s / side",c:"Tuck the pelvis under, squeeze the glute of the stretched leg.",y:"couch stretch quad hip flexor tutorial"},
+    {n:"Ankle pumps + calf-raise pump",s:"2-3×20-30",c:"Easy rhythm, full range — flushes tired legs (venous return).",y:"ankle pumps calf raises circulation recovery"},
+    {n:"Downward-dog heel pedals",s:"30-60s",c:"Press one heel down as the other lifts, spine long.",y:"downward dog pedaling calf stretch"},
+    {n:"Legs-up-the-wall",s:"5-10 min",c:"Hips near the wall, relax, slow nasal breathing — passive drainage.",y:"legs up the wall recovery pose"},
+    {n:"Easy recovery walk",s:"15-30 min",c:"Conversational, never sore-inducing — the day after hard efforts (your morning coffee walk is perfect).",y:"active recovery walk benefits DOMS"}
+  ],
+  recovery:[
+    {n:"Full-leg foam roll routine",s:"60-90s / area",c:"Calves, quads, glutes, adductors — avoid rolling on joints/bone.",y:"full leg foam rolling recovery routine"},
+    {n:"90/90 hip mobility",s:"5-8 / side",c:"Rotate both knees floor-to-floor, sit tall.",y:"90 90 hip mobility exercise tutorial"},
+    {n:"World's greatest stretch",s:"3-5 / side",c:"Lunge, hand down, rotate open through the T-spine.",y:"worlds greatest stretch tutorial"},
+    {n:"Cat-cow + thoracic rotation",s:"8-10 + 5 / side",c:"Move with the breath, no forcing.",y:"cat cow thoracic rotation mobility flow"},
+    {n:"Legs-up-wall + slow breathing",s:"5-10 min",c:"Long, slow exhales to downshift the nervous system.",y:"legs up the wall breathing recovery"},
+    {n:"Slow breathing (~6 / min)",s:"5 min",c:"Before bed — long exhale, aids sleep and recovery.",y:"slow breathing 6 breaths per minute recovery"},
+    {n:"Yin / bedtime mobility flow",s:"10-15 min",c:"Hold easy stretches, never into pain, keep breathing.",y:"yin yoga for hikers recovery bedtime"}
+  ],
+  nn:[
+    {n:"Hip 90/90",s:"2×20",c:"Knees floor-to-floor, sit tall.",y:"90 90 hip mobility exercise tutorial"},
+    {n:"Elevated pigeon",s:"1×3 · 30s",c:"Square the hips, breathe into the glute.",y:"elevated pigeon pose stretch tutorial"},
+    {n:"Couch stretch",s:"1×3 · 30s",c:"Tuck the pelvis, squeeze the glute.",y:"couch stretch quad hip flexor tutorial"},
+    {n:"Foam roll calves",s:"60-90s / leg",c:"Pause on tender spots — keeps the tension down for descents.",y:"how to foam roll calves soleus tutorial"}
+  ],
+  vanElbow:[
+    {n:"Elbow flexion / extension ROM",s:"2-3×10-15",c:"Move slowly through the full comfortable range — no forcing end-range.",y:"elbow flexion extension range of motion exercise",flag:"Clear with physio first · stop at joint pain or swelling"},
+    {n:"Forearm pronation / supination",s:"2-3×10-15",c:"Elbow tucked, bent 90° — rotate palm up then down slowly (often the stiff one).",y:"forearm pronation supination exercise physiotherapy"},
+    {n:"Wrist flexor / extensor stretch",s:"20-30s ×2-3",c:"Gently press the hand back/forward — mild stretch only.",y:"wrist flexor extensor stretch tutorial"},
+    {n:"Grip squeeze (soft ball)",s:"2-3×8-12",c:"Soft squeeze, hold 2-3s, release — no sharp pain.",y:"soft ball grip strengthening after fracture"},
+    {n:"Isometric elbow holds",s:"3-5 × 10s",c:"Push/pull against an unmoving surface at ~30-50% effort, pain-free.",y:"isometric elbow strengthening exercise"},
+    {n:"Light wrist curls (+ reverse)",s:"2-3×10-15",c:"Small range, add tiny load only once it stays pain-free.",y:"light wrist curls reverse wrist curls forearm"},
+    {n:"Progressive band → DB loading",s:"Build over weeks",c:"Increase in small steps; if sore the next day, hold or reduce.",y:"progressive elbow strengthening resistance band",flag:"Avoid heavy grip/hangs, hand-weight-bearing planks/push-ups & impact until cleared"}
+  ],
+  vanAnkle:[
+    {n:"Single-leg balance progression",s:"3 × 20-40s / leg",c:"Soft knee, quiet foot; progress eyes-open → eyes-closed.",y:"single leg balance exercise progression ankle"},
+    {n:"Single-leg balance on pillow",s:"3 × 20-30s / leg",c:"Use a hotel pillow — let the ankle make small corrections, don't grab.",y:"single leg balance on pillow ankle stability"},
+    {n:"Ankle alphabet",s:"1-2 × A-Z / foot",c:"Big slow letters, move only the ankle.",y:"ankle alphabet exercise tutorial"},
+    {n:"Band eversion (peroneals)",s:"3×12-15",c:"Turn the sole outward slowly — the key stabiliser vs. rolling in.",y:"ankle eversion resistance band exercise"},
+    {n:"4-way ankle band",s:"3×12-15 each",c:"Slow controlled reps in all four directions, no bouncing.",y:"4 way ankle strengthening band tutorial"},
+    {n:"Single-leg calf raise",s:"3×12-15 / leg",c:"Rise tall, control the lower, keep the ankle from wobbling out.",y:"single leg calf raise ankle stability"},
+    {n:"Y-balance reach",s:"3 × 5-6 / dir / leg",c:"Stand on one leg, tap far out in each direction, return controlled.",y:"Y balance star excursion ankle exercise"},
+    {n:"Single-leg hop and stick",s:"2-3 × 5 / leg",c:"Small hop, land soft, \"stick\" and hold 2-3s without wobble.",y:"single leg hop and stick landing control",flag:"Higher-level — only once the basics feel solid"}
+  ]
+};
+TEX.physioAll=TEX.ankle.concat(TEX.hip);
+const TWEEKS=[
+  {id:"w1",start:"2026-06-14",end:"2026-06-20",n:1,ph:"p0",cyc:"menstrual→follicular",pack:"No pack",drive:"build",focus:"<b>Reactivation.</b> Confirm hip + ankle tolerate load cleanly. Bank the Saturday hike. Build as energy returns through the week.",targets:[{icon:"🦋",title:"Physio",meta:"Full lower-body program",count:3},{icon:"🦶",title:"Ankle & Foot physio",meta:"Before every gym session",count:3},{icon:"🏋️",title:"Weight training",meta:"Bodyweight, form check",count:2},{icon:"🪜",title:"Zone 2 sessions",meta:"25-30 min, moderate",count:2},{icon:"⛰",title:"Zone 2 sessions",meta:"25 min @10-12% + decline finish",count:2},{icon:"🚶",title:"Centennial walks",meta:"45-60 min, aim 5+",count:5}],hike:{title:"Royal NP: Bundeena → Curracurrong",meta:"Sat 20 Jun · ~18 km · 820 m · no pack",det:"Ferry or drive ~55 min. Big coastal climbs, good sustained TMB effort, mostly Zone 2 with Zone 3 on climbs. Descents slow + deliberate. Non-negotiables after."},note:"Still menstrual early in the week, so let intensity build rather than forcing it. No pack this week."},
+  {id:"w2",start:"2026-06-21",end:"2026-06-27",n:2,ph:"p1",cyc:"follicular→ovulatory",pack:"5 kg",drive:"push",focus:"<b>Base build, high energy.</b> Follicular week climbing to an ovulatory peak. Push the biggest day of the fortnight on Saturday.",targets:[{icon:"🦋",title:"Physio",meta:"Full program",count:3},{icon:"🦶",title:"Ankle & Foot physio",meta:"Every gym session",count:4},{icon:"🏋️",title:"Weight training",meta:"Add light dumbbells to step-ups + lunges",count:2},{icon:"🪜",title:"Zone 2 sessions",meta:"40-50 min, moderate-high",count:2},{icon:"⛰",title:"Zone 2 sessions",meta:"50-60 min @12% + 10 min decline · 5 kg",count:2},{icon:"🧘",title:"Pilates",meta:"Cross-train, not recovery",count:2},{icon:"🚶",title:"Centennial walks",meta:"45-60 min",count:5}],hike:{title:"Blue Mtns: National Pass loop",meta:"Sat 27 Jun · 6-7 hrs · ~900 m · 5 kg",det:"Drive ~1h20 to Wentworth Falls. Sustained climbs + technical descents, closest terrain to the TMB. Carry 5 kg. Ovulatory peak energy. Non-negotiables after."},note:"Pack training starts: 5 kg on the incline treadmill and the hike. Easy morning walks are your real recovery, not Pilates."},
+  {id:"w3",start:"2026-06-28",end:"2026-07-04",n:3,ph:"p1",cyc:"ovulatory→luteal",pack:"6 kg",drive:"push",focus:"<b>Peak-energy Phase 1 week.</b> Ovulatory into early luteal — the strongest window of this block. Full load at 6 kg. First PT session done; the PT block proper starts next week.",targets:[{icon:"🦋",title:"Physio",meta:"Full program",count:3},{icon:"🦶",title:"Ankle & Foot physio",meta:"Every gym session (program ends 7 Jul)",count:3},{icon:"🏋️",title:"Weight training",meta:"Dumbbells",count:2},{icon:"⛰",title:"Zone 2 sessions",meta:"50-60 min + decline · 6 kg",count:2},{icon:"🪜",title:"Zone 2 sessions",meta:"40-50 min",count:2},{icon:"🚶",title:"Centennial walks",meta:"45-60 min",count:5}],hike:{title:"Royal NP: Coast Track section",meta:"Sat 4 Jul · 6 hrs · 6 kg",det:"Otford to Garie or Bundeena to Wattamolla, 6 kg. Bank this while energy is high — next week eases into the pre-period + travel stretch. Non-negotiables after."},note:"Strongest phase of the block. Get the quality work in now; the next two weeks are deliberately lighter (period, PT, then the New Cal holiday)."},
+  {id:"w4",start:"2026-07-05",end:"2026-07-11",n:4,ph:"p1",cyc:"luteal",pack:"8-10 kg",drive:"build",med:true,focus:"<b>PT week.</b> Two personal-training sessions (Mon 6 + Wed 8 Jul). Steady luteal load early, then ease toward the weekend as your period approaches (~13 Jul). Ankle program retires 7 Jul.",targets:[{icon:"💪",title:"PT sessions",meta:"Mon 6 + Wed 8 Jul · Full Body A",count:2},{icon:"🦋",title:"Physio (hip + ankle/foot)",meta:"Both programs · ankle/foot ends 7 Jul",count:3},{icon:"⛰",title:"Zone 2 sessions",meta:"45-55 min + decline + pack",count:2},{icon:"⚡",title:"Non-negotiables",meta:"After every session",count:4},{icon:"🚶",title:"Morning coffee walk",meta:"~1 hr, Centennial · early AM",count:4}],hike:{title:"Hike day — your pick",meta:"Tue 7 or Thu 9 Jul · 2-3 hrs · 8-10 kg",easy:true,det:"Your chosen midweek hike (7 or 9 Jul), carrying 8-10 kg. Keep the effort easy-moderate — it sits around your PT sessions and just before your period (~13 Jul), so lighten the pack if you feel rough. Long Centennial or coastal route; prioritise iron-rich food and sleep going into travel."},note:"Last full week before New Caledonia. Front-load the PT quality early, ease as the period nears. Ankle & Foot program finishes 7 Jul — the hip program continues all the way to the trek."},
+  {id:"w5",start:"2026-07-12",end:"2026-07-18",n:5,ph:"p1",cyc:"menstrual→follicular",pack:"No pack",drive:"rest",med:true,travel:true,flex:true,focus:"<b>New Caledonia — holiday deload.</b> Final PT session Mon 13 Jul, then fly out 14 Jul. Your period arrives ~13 Jul, so the first holiday days double as rest. No gym: room bodyweight + mobility, maybe one small easy walk.",targets:[{icon:"💪",title:"PT session (last of block)",meta:"Mon 13 Jul · Full Body A",count:1},{icon:"🧳",title:"At-home &/or travel bodyweight",meta:"In your room, only if you feel like moving",count:2},{icon:"🦵",title:"Leg-tension routine",meta:"Foam/ball roll + calf work, daily",count:4},{icon:"🌴",title:"Easy walk / beach",meta:"Great foot + ankle proprioception",count:2},{icon:"⚡",title:"Non-negotiable stretches",meta:"Daily, even on rest days",count:4}],hike:{title:"🌴 Pic N'Ga · Isle of Pines",meta:"18 or 19 Jul · ~2-3 hrs · easy-moderate · no pack",easy:true,det:"The classic Île des Pins summit (~262 m) — roughly 1-1.5 hrs up through forest to a 360° view over the bays. Easy-moderate, no pack. You may still be early in your period, so lead by feel and take it gently — it's a holiday walk, not a training effort. Good foot + ankle work on the terrain."},note:"No real gym on holiday — that is the point. Let the legs absorb the block. The travel circuit and leg-tension routine are optional; rest is the priority while your period passes."},
+  {id:"w6",start:"2026-07-19",end:"2026-07-25",n:6,ph:"p1",cyc:"follicular",pack:"8-10 kg (hikes)",drive:"build",focus:"<b>Second half of New Cal, then back to the gym.</b> Follicular energy — good for a small hike or two in New Cal (through 21 Jul). Home 22 Jul with ~3 gym days (22-24 Jul) to ease back into weight training + Zone 2 before Saturday's hike.",targets:[{icon:"🌴",title:"New Cal small hikes",meta:"19-21 Jul · easy, no pack, follicular energy",count:2},{icon:"🧳",title:"At-home &/or travel bodyweight",meta:"New Cal days, no gym",count:2},{icon:"🏋️",title:"Weight training",meta:"Home 22 Jul · 3 gym days (22-24) · Full Body A",count:2},{icon:"⛰",title:"Zone 2 sessions",meta:"Home gym · ~45 min, ease pack back on",count:1},{icon:"🦋",title:"Physio",meta:"Keep it ticking over",count:3},{icon:"🚶",title:"Morning coffee walk",meta:"~1 hr, early AM",count:4}],hike:{title:"Hike — first weekend home",meta:"Sat 25 Jul · 4-5 hrs · 8-10 kg",det:"Back from New Caledonia (home 22 Jul) — your first proper hike in Sydney again, carrying 8-10 kg. Follicular energy, so a solid moderate day. Royal NP coastal section or similar. Descents slow and deliberate. The New Cal walks (Pic N'Ga etc.) are tracked as their own target above."},note:"You lose no fitness in a one-week holiday — you gain recovery. Follicular energy makes the back half of the trip a good time for a scenic walk. Home 22 Jul: rebuild, don't sprint."},
+  {id:"w7",start:"2026-07-26",end:"2026-08-01",n:7,ph:"p1→p2",cyc:"ovulatory→luteal",pack:"8-10 kg",drive:"push",focus:"<b>Back to full training — Phase 2 begins.</b> First full week home. Ovulatory peak early, so push the rebuild. Hikes carry 8-10 kg.",targets:[{icon:"🦋",title:"Physio",meta:"Full program",count:3},{icon:"🏋️",title:"Weight training",meta:"Back to load, add band on squats",count:2},{icon:"⛰",title:"Zone 2 sessions",meta:"Stair/incline, 45-55 min, decline + pack",count:3},{icon:"🧘",title:"Pilates",meta:"Cross-train, not recovery",count:1}],hike:{title:"Blue Mtns: National Pass + extension",meta:"Sat 1 Aug · 6-7 hrs · ~900 m · 8-10 kg",det:"First big day back, ovulatory into early luteal — still strong. Sustained climbs + technical descents at 8-10 kg. Descents slow + deliberate. Non-negotiables after."},note:"Ease back into gym load over the first two or three sessions; hikes carry the full 8-10 kg. Phase 2 (trek simulation) starts here."},
+  {id:"w8",start:"2026-08-02",end:"2026-08-08",n:8,ph:"p2",cyc:"luteal",pack:"8-10 kg",drive:"build",flex:true,job:true,focus:"<b>New job starts Mon 3 Aug.</b> Weekday sessions compress around work from here. Steady luteal work early, ease toward the weekend as your period nears (~10 Aug). Hikes at 8-10 kg.",targets:[{icon:"🦋",title:"Physio",meta:"Full program",count:3},{icon:"🏋️",title:"Weight training",meta:"Heavy DBs, early week",count:2},{icon:"⛰",title:"Zone 2 sessions",meta:"45-55 min, decline + pack",count:3},{icon:"🧘",title:"Pilates",meta:"Cross-train",count:1}],hike:{title:"Royal NP: Coast Track section",meta:"Sat 8 Aug · 5-6 hrs · 8-10 kg",det:"Moderate day at 8-10 kg. If PMS or low recovery hits, shorten it or drop pack weight — the big stimulus is next week's confidence hike. Non-negotiables after."},note:"Train to feel and your WHOOP recovery. The day before your period is a protected easy or rest day."},
+  {id:"w9",start:"2026-08-09",end:"2026-08-15",n:9,ph:"p2",cyc:"menstrual→follicular",pack:"8-10 kg",drive:"push",med:true,focus:"<b>Confidence-hike week.</b> Period ~10 Aug, so ease Mon-Wed, then ride the follicular rebound into the single biggest day of the plan on Sat 15 Aug at full trek weight.",targets:[{icon:"🦋",title:"Physio",meta:"Full program",count:3},{icon:"🏋️",title:"Weight training",meta:"Heavy + vest, mid-week",count:2},{icon:"⛰",title:"Zone 2 sessions",meta:"45-55 min, 15 min decline + pack",count:4}],hike:{title:"⭐ CONFIDENCE HIKE · Blue Mtns",meta:"Sat 15 Aug · 8-9 hrs · ~1200 m · 8-10 kg",det:"Six Foot Track section or full National Pass + extensions at 8-10 kg — full trek weight. Test ALL gear: boots, pack, layers, food, poles, and trail fuelling (30-60 g carbs/hour). Lands on day ~6 — early follicular by design, even though the week opens on your period. If this feels good, you are ready. Schedule nothing else this weekend. Do not skip the non-negotiables."},note:"Full 8-10 kg and your best predictor of trek readiness. The week starts on your period, so keep Mon-Wed genuinely easy and let the follicular rebound carry the Saturday hike."},
+  {id:"w10",start:"2026-08-16",end:"2026-08-22",n:10,ph:"p2",cyc:"follicular",pack:"8-10 kg",drive:"build",flex:true,focus:"<b>Consolidate at full weight.</b> Good follicular energy — hold your gains with one more solid day, no new stimulus this close to the trek.",targets:[{icon:"🦋",title:"Physio",meta:"Full program",count:3},{icon:"🏋️",title:"Weight training",meta:"Heavy",count:2},{icon:"⛰",title:"Zone 2 sessions",meta:"45-55 min + pack",count:3},{icon:"🧘",title:"Pilates",meta:"Cross-train, sometimes",count:1}],hike:{title:"Royal NP: relaxed long day",meta:"Sat 22 Aug · 5-6 hrs · 8-10 kg · easy",det:"Last big hike before taper. 8-10 kg, easy pace, mostly Zone 2, no testing. Savour it. Non-negotiables after."},note:"Maintenance week. Resist adding anything new this close to the trek — hold the line and lean on your WHOOP trend."},
+  {id:"w11",start:"2026-08-23",end:"2026-08-29",n:11,ph:"tp",cyc:"ovulatory→luteal",pack:"Light test only",drive:"ease",flex:true,focus:"<b>Taper begins.</b> Pull volume right back. Let the legs absorb the work.",targets:[{icon:"🧘",title:"Pilates",meta:"Cross-train, gentle",count:2},{icon:"🚶",title:"Short walks",meta:"30-40 min",count:5},{icon:"⚡",title:"Physio + recovery stretches",meta:"Daily",count:6}],hike:{title:"Optional easy pack-test walk",meta:"~2-3 hrs · light · gear check",easy:true,det:"Only a gentle walk to confirm gear and fit. No big efforts. Final kit check this week."},note:"No new training stimulus from here. Trust everything you've built."},
+  {id:"w12",start:"2026-08-30",end:"2026-09-05",n:12,ph:"tp",cyc:"luteal",pack:"None",drive:"ease",focus:"<b>Taper.</b> Period arrives ~7 Sep, in the quietest possible window. Rest as planned.",targets:[{icon:"🧘",title:"Pilates",meta:"Cross-train, gentle",count:1},{icon:"🚶",title:"Easy walks",meta:"30-40 min",count:4},{icon:"⚡",title:"Physio + recovery stretches",meta:"Daily",count:6}],hike:null,note:"Period in taper is ideal timing. Nothing to push. Sleep, stretch, gentle movement."},
+  {id:"w13",start:"2026-09-06",end:"2026-09-12",n:13,ph:"tp",cyc:"menstrual→follicular",pack:"None",drive:"rest",focus:"<b>Final taper.</b> Period ~7 Sep, energy rising as the bleed ends. Resist doing extra. Pack and prep.",targets:[{icon:"🚶",title:"Gentle walks",meta:"30-40 min",count:4},{icon:"⚡",title:"Physio + recovery stretches",meta:"Daily",count:6},{icon:"🎒",title:"Final pack + gear prep",meta:"Boots, layers, poles, food",count:1}],hike:null,note:"Trek departs 13 Sep at cycle day ~7, follicular, energy rising. You'll hit ovulatory peak around trek day 6-7. Next period ~4-5 Oct, well after you finish."}
+];
+const TMILE=[["2026-07-06","💪 PT session · Mon"],["2026-07-08","💪 PT session · Wed"],["2026-07-14","✈️ New Caledonia"],["2026-07-22","🏝 Home from New Cal"],["2026-08-03","💼 New job starts"],["2026-08-15","⭐ Confidence Hike"],["2026-09-13","⛰ TREK DEPARTS"]];
+function tToday(){return new Date().toISOString().slice(0,10);}
+function tCurWk(){const t=tToday();let i=TWEEKS.findIndex(w=>t>=w.start&&t<=w.end);if(i<0)i=t<TWEEKS[0].start?0:TWEEKS.length-1;return i;}
+function tDaysTrek(){const n=new Date();n.setHours(0,0,0,0);return Math.max(0,Math.ceil((new Date("2026-09-13")-n)/864e5));}
+function tDR(w){const sd=new Date(w.start+"T00:00:00"),ed=new Date(w.end+"T00:00:00");const f={day:"numeric",month:"short"};return sd.toLocaleDateString("en-AU",f)+" – "+ed.toLocaleDateString("en-AU",f);}
+function tCyc(w){return w.cyc.includes("→")?w.cyc.split("→")[0]:w.cyc;}
+function tExRows(arr){return arr.map(e=>`<div style="padding:7px 0;border-bottom:1px solid var(--bor)"><div style="display:flex;gap:8px;align-items:baseline"><strong style="font-size:12.5px;color:var(--txt)">${esc(e.n)}</strong>${e.s?`<span style="margin-left:auto;font-size:11px;font-weight:700;color:var(--forM);white-space:nowrap;flex-shrink:0">${esc(e.s)}</span>`:""}</div>${e.c?`<div style="font-size:11.5px;color:var(--txL);margin-top:2px;line-height:1.45">${esc(e.c)}</div>`:""}${e.flag?`<div style="font-size:10.5px;color:var(--warn);font-weight:600;margin-top:3px">⚠ ${esc(e.flag)}</div>`:""}<a href="${TV(e.y)}" target="_blank" rel="noopener" style="display:inline-block;margin-top:4px;font-size:11px;font-weight:700;color:var(--it);text-decoration:none">▶ Watch demo</a></div>`).join("");}
+
+function rTraining(){
+  const ci=tCurWk(),cw=TWEEKS[ci],today=tToday();
+  const pill=(bg,co,txt)=>`<span style="font-size:9.5px;font-weight:700;padding:2px 9px;border-radius:20px;background:${bg};color:${co}">${txt}</span>`;
+  const PROGS=[
+    {icon:"🔥",title:"Warm-up",sub:"do first, every session",arr:TEX.warmup},
+    {icon:"💪",title:"PT · Full Body A",sub:"main strength session",note:"Single-leg, press and carry work that doubles as descent/eccentric prep. Vanessa: scale the DB press and grip-heavy moves for the elbow.",arr:TEX.fullA},
+    {icon:"⛰",title:"Strength + descent prep",sub:"knee-saving eccentric work",note:"The strength that protects your knees on long descents — eccentric step-downs, tempo squats, single-leg and glute-med work, plus circuit staples.",arr:TEX.descent.concat(TEX.circuit)},
+    {icon:"🧳",title:"At-home / travel bodyweight",sub:"no-gym days",arr:TEX.travel},
+    {icon:"🦶",title:"Physio 1 · Ankle &amp; Foot",sub:"to 7 Jul, then optional",arr:TEX.ankle},
+    {icon:"🦋",title:"Physio 2 · Lower Body (hip)",sub:"runs to the trek",arr:TEX.hip},
+    {icon:"🦵",title:"Leg tension / lactic legs",sub:"do often",note:"Next-day tightness is DOMS + neuromuscular tension. Blood flow, gentle mobility, hydration + sodium-led electrolytes, and not spiking load are what help.",arr:TEX.legten},
+    {icon:"🧘",title:"Recovery &amp; mobility",sub:"aids multi-day hiking",arr:TEX.recovery},
+    {icon:"⚡",title:"Non-negotiables",sub:"after every session",arr:TEX.nn},
+    {icon:"🫱",title:"Vanessa · left elbow rehab",sub:"healed fracture",note:"Restore pain-free range, then light isometrics, then gradual load. Stop on joint pain/swelling. Physio sign-off before loading.",arr:TEX.vanElbow},
+    {icon:"🦿",title:"Vanessa · right ankle stability",sub:"wobbly ankle",note:"Combined balance + strengthening, 4+ weeks consistent, works best. Most need no equipment.",arr:TEX.vanAnkle}
+  ];
+  return`<div class="ptitle">🏋️ TMB Training Plan</div>
+<div style="font-size:12.5px;color:var(--txM);line-height:1.6;margin-bottom:12px">Addy's full cycle-adapted training plan, imported from the separate training app as a read-only reference. Hard efforts are timed to your highest-energy phases; easy weeks fall on your period, the New Caledonia holiday and the taper. <strong>Vanessa sees all of it</strong> (her elbow + ankle prehab is in the exercise library). Tap any section to open it.</div>
+<div class="g3" style="margin-bottom:12px">
+  <div class="sc"><div class="sv">${tDaysTrek()}</div><div class="sl">Days to trek · 13 Sep</div></div>
+  <div class="sc"><div class="sv">${cw.n}/13</div><div class="sl">Current week</div></div>
+  <div class="sc"><div class="sv" style="font-size:13px;line-height:1.2">🎒 ${esc(cw.pack)}</div><div class="sl">This week's pack</div></div>
+</div>
+<div class="card cp" style="margin-bottom:12px;border-left:3px solid ${TDRIVE[cw.drive].col}">
+  <div style="font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--txL);margin-bottom:7px">THIS WEEK · ${tDR(cw)}</div>
+  <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:9px">
+    ${pill(TDRIVE[cw.drive].col,"#fff","🔥 "+TDRIVE[cw.drive].lbl)}
+    ${pill(TPH[cw.ph.split("→")[0]].dot+"22","var(--txM)",esc(TPH[cw.ph.split("→")[0]].lbl))}
+    ${pill(TCS[tCyc(cw)].dot+"22",TCS[tCyc(cw)].tx,esc(cw.cyc))}
+  </div>
+  <div style="font-size:12.5px;line-height:1.5;color:var(--txM)">${cw.focus}</div>
+</div>
+<details class="sec"><summary>❤️ Heart-rate zones</summary><div class="secbody">
+  <div style="font-size:11px;color:var(--txL);line-height:1.5;margin-bottom:8px">Provisional (age 36, resting 49, est. max ~183, Karvonen). Clonidine lowers and Vyvanse raises working HR — lead with effort + the talk test.</div>
+  ${TZONES.map(z=>`<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--bor)"><div style="width:6px;align-self:stretch;border-radius:4px;background:${z.col};flex-shrink:0"></div><div style="flex:1;min-width:0"><strong style="font-size:12.5px">${esc(z.n)}</strong><div style="font-size:11px;color:var(--txL);line-height:1.35">${esc(z.d)}</div></div><div style="font-weight:800;color:${z.col};white-space:nowrap;flex-shrink:0">${esc(z.bpm)}</div></div>`).join("")}
+</div></details>
+<details class="sec"><summary>🌙 Cycle &amp; intensity timing</summary><div class="secbody">
+  <div style="font-size:11px;color:var(--txL);line-height:1.5;margin-bottom:8px">Hardest efforts land in your highest-energy phases; easy weeks fall on your period, holiday and taper. Period anchored ~13 Jul, ~10 Aug, ~7 Sep. The calendar is the plan — your body + WHOOP recovery are the veto.</div>
+  ${TCYCLE.map(p=>{const c=TCS[p.ph];return`<div style="background:${c.bg};border:1px solid ${c.bd};color:${c.tx};border-radius:10px;padding:10px 12px;margin-bottom:7px"><div style="display:flex;align-items:center;gap:8px"><span style="width:9px;height:9px;border-radius:50%;background:${c.dot};flex-shrink:0"></span><strong style="font-size:12.5px">${esc(p.hd)}</strong><span style="margin-left:auto;font-size:10px;font-weight:800;color:${c.dot};white-space:nowrap">${esc(p.push)}</span></div><div style="font-size:11.5px;line-height:1.45;margin-top:4px;opacity:.92">${esc(p.txt)}</div></div>`;}).join("")}
+</div></details>
+<div style="font-size:11px;font-weight:600;color:var(--txL);margin:15px 0 6px;letter-spacing:.5px">13-WEEK PLAN</div>
+${TWEEKS.map((w,i)=>{const isCur=i===ci,past=w.end<today&&!isCur,d=TDRIVE[w.drive],c=TCS[tCyc(w)];
+  return`<details class="sec"${isCur?" open":""}><summary>${w.travel?"🧳":w.flex?"🔀":"📅"} Week ${w.n} · ${tDR(w)}${isCur?` <span style="color:var(--for);font-weight:700">· NOW</span>`:past?` <span style="color:var(--txL);font-weight:400">· done</span>`:""}</summary><div class="secbody">
+  <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px">
+    ${pill(d.col,"#fff","🔥 "+d.lbl)}
+    ${pill(TPH[w.ph.split("→")[0]].dot+"22","var(--txM)",esc(TPH[w.ph.split("→")[0]].lbl))}
+    ${pill(c.dot+"22",c.tx,esc(w.cyc))}
+    ${pill("var(--surB)","var(--txM)","🎒 "+esc(w.pack))}
+  </div>
+  <div style="font-size:12px;line-height:1.5;color:var(--txM);margin-bottom:9px">${w.focus}</div>
+  ${w.note?`<div style="font-size:11.5px;font-style:italic;color:var(--txL);background:var(--surB);border-radius:8px;padding:8px 10px;margin-bottom:9px;line-height:1.5">${esc(w.note)}</div>`:""}
+  <div style="font-size:10px;font-weight:700;color:var(--txL);letter-spacing:.5px;margin-bottom:3px">TARGETS</div>
+  ${w.targets.map(tg=>`<div style="display:flex;align-items:center;gap:9px;padding:6px 0;border-bottom:1px solid var(--bor)"><div style="width:26px;height:26px;border-radius:7px;background:var(--surB);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">${tg.icon}</div><div style="flex:1;min-width:0"><div style="font-size:12.5px;font-weight:600">${esc(tg.title)}</div><div style="font-size:11px;color:var(--txL)">${esc(tg.meta)}</div></div><div style="font-size:12px;font-weight:800;color:var(--forM);white-space:nowrap;flex-shrink:0">×${tg.count||1}</div></div>`).join("")}
+  ${w.hike?`<div class="nbox" style="background:${w.hike.easy?"#F0EBFA":"#FBF3D6"};border:1px solid ${w.hike.easy?"#D6C9F0":"#F0DCA8"};margin-top:9px;margin-bottom:0"><div class="nh" style="color:${w.hike.easy?"#43307A":"#5C4410"}">${w.hike.title.startsWith("⭐")?"⭐":w.hike.easy?"🌿":"🏔"} ${esc(w.hike.title.replace("⭐ ",""))}</div><div style="font-size:11px;color:${w.hike.easy?"#6E5E96":"#8A7530"};margin:2px 0 4px">${esc(w.hike.meta)}</div><div class="nb2" style="color:var(--txM)">${esc(w.hike.det)}</div></div>`:""}
+</div></details>`;}).join("")}
+<div style="font-size:11px;font-weight:600;color:var(--txL);margin:16px 0 6px;letter-spacing:.5px">EXERCISE LIBRARY <span style="font-weight:400;text-transform:none">· ▶ video on every move</span></div>
+${PROGS.map(p=>`<details class="sec"><summary>${p.icon} ${p.title}${p.sub?` <span style="font-weight:400;color:var(--txL);font-size:11px">· ${esc(p.sub)}</span>`:""}</summary><div class="secbody">${p.note?`<div style="font-size:11.5px;font-style:italic;color:var(--txL);background:var(--surB);border-radius:8px;padding:8px 10px;margin-bottom:6px;line-height:1.5">${esc(p.note)}</div>`:""}${tExRows(p.arr)}</div></details>`).join("")}
+<div class="empty" style="padding:14px 0 4px">Read-only mirror of the training app · TMB departs 13 Sep 2026</div>`;
 }
 
 // ── BIND ──────────────────────────────────────────────────────────────────────
