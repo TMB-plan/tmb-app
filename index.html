@@ -6,21 +6,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--txt);min-
 *:focus-visible{outline:2px solid var(--forM);outline-offset:2px}
 button,input,textarea,select{font-family:'DM Sans',sans-serif;cursor:pointer}
 .serif{font-family:'Cormorant Garamond',serif}
-/* Readability: scale the whole app up on larger screens; phones keep the tuned mobile sizing */
+/* Scale the whole app up for readability. Phones were too small, so they get the biggest bump.
+   zoom reflows the layout (unlike transform:scale), so content still fits the screen width. */
+#root{zoom:1.32}
 @media (min-width:700px){#root{zoom:1.2}}
-/* Phones: enlarge the header + tab bar so the top reads bigger and is easier to tap */
-@media (max-width:699px){
-  .hdr{padding:24px 18px 0}
-  .mtn{height:56px;opacity:.13}
-  .hdr-tag{font-size:11.5px;letter-spacing:2px;margin-bottom:6px}
-  .hdr-title{font-size:31px;line-height:1.05}
-  .hdr-sub{font-size:12.5px;margin-top:4px}
-  .hdr-num{font-size:46px}
-  .hdr-lbl{font-size:11.5px}
-  .pbar{height:4px}
-  nav{gap:3px;padding-top:11px}
-  .nb{font-size:13.5px;padding:10px 14px;gap:6px;border-radius:9px 9px 0 0}
-}
+/* A little extra breathing room in the header on phones */
+@media (max-width:699px){.hdr{padding:20px 16px 0}.mtn{height:52px;opacity:.12}}
 
 /* HEADER */
 .hdr{background:linear-gradient(158deg,#254A32 0%,var(--for) 52%,#142819 100%);padding:16px 16px 0;position:relative;overflow:hidden;box-shadow:var(--shHdr)}
@@ -466,10 +457,10 @@ const CC={FR:"var(--fr)",IT:"var(--it)",CH:"var(--ch)"};
 const CN={FR:"France",IT:"Italy",CH:"Switzerland"};
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
-let S={tab:"overview",openStage:null,activeJournal:null,jDraft:{},gear:{},todos:{},journal:{},acNotes:{}};
+let S={tab:"overview",openStage:null,activeJournal:null,jDraft:{},gear:{},todos:{},journal:{},acNotes:{},train:{}};
 
-function load(){}
-function save(k,v){}
+function load(){try{const r=(k,d)=>{const v=localStorage.getItem(k);return v?JSON.parse(v):d;};S.gear=r("tmb_gear",S.gear);S.todos=r("tmb_todos",S.todos);S.journal=r("tmb_journal",S.journal);S.acNotes=r("tmb_acnotes",S.acNotes);S.train=r("tmb_train",S.train);}catch(e){}}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
 
 function days(){return Math.max(0,Math.ceil((DEPART-new Date())/86400000));}
 function pct(){const s=new Date("2026-01-01"),e=DEPART,n=new Date();return Math.min(100,Math.max(0,Math.round(((n-s)/(e-s))*100)));}
@@ -614,6 +605,18 @@ const REFRESH={
     {n:"Le Brévent, Le Panoramic",at:"~14 km / ~7 h",f:"Panoramic restaurant",o:"Lift-tied and closed for your dates, CLOSED",meal:false},
     {n:"Refuge de Bellachat",at:"~16 km / ~8 h (on the descent)",f:"Omelette + blueberry tartlet, the best real meal on the way down",o:"Borderline mid-Sept, confirm",meal:true}]}
 };
+// Key waypoints passed on the planned route, in order (per stage day). Rest day (4) has none.
+const VIA={
+  1:["Les Houches","Bellevue (cable car)","Bionnassay glacier suspension bridge","Col de Tricot 2,120 m","Chalets de Miage","Le Truc","Les Contamines"],
+  2:["Notre-Dame de la Gorge","Refuge de Nant Borrant","Refuge de la Balme","Col du Bonhomme 2,329 m","Croix du Bonhomme 2,483 m","Col des Fours 2,665 m","Tête Nord des Fours 2,756 m","Les Chapieux"],
+  3:["Ville des Glaciers","Refuge des Mottets","Col de la Seigne 2,516 m (into Italy)","Rifugio Elisabetta","Lac Combal","Mont Favre balcony 2,430 m","Col Chécrouit · Maison Vieille","Courmayeur"],
+  5:["Courmayeur","Rifugio Bertone","Mont de la Saxe ridge","Testa della Tronche","Rifugio Bonatti"],
+  6:["Rifugio Bonatti","Arnouva · Chalet Val Ferret","Rifugio Elena","Grand Col Ferret 2,537 m (into Switzerland)","Alpage de la Peule","Ferret","La Fouly"],
+  7:["La Fouly","Praz-de-Fort","Issert","Champex-Lac"],
+  8:["Champex-Lac","Alpage de Bovine (buvette)","Col de la Forclaz","Trient"],
+  9:["Trient","Col de Balme 2,191 m (into France)","Aiguillette des Posettes ridge","Tré-le-Champ"],
+  10:["Tré-le-Champ","the ladders","Tête aux Vents","Lac Blanc 2,352 m","La Flégère","Grand Balcon Sud","Le Brévent 2,525 m","Refuge de Bellachat","Chamonix"]
+};
 function rStages(){
   return`<div class="ptitle">10-Day Trail Itinerary</div>`+
   STAGES.map(s=>{
@@ -646,20 +649,25 @@ function rStages(){
       <div class="dcell"><div class="l">Elevation loss</div><div class="v">${s.loss}</div></div>
       <div class="dcell"><div class="l">Max altitude</div><div class="v">${s.alt}</div></div>`}
     </div>
+    ${!s.rest&&ELEV[s.day]?`<div style="background:var(--surB);border:1px solid var(--bor);border-radius:10px;padding:10px 12px 6px;margin-bottom:10px">
+      <div style="font-size:10px;font-weight:600;color:var(--txL);letter-spacing:.5px;margin-bottom:2px">📈 ELEVATION PROFILE <span style="font-weight:400;text-transform:none">· approximate</span></div>
+      ${pk?`<div style="font-size:10.5px;color:var(--txL);margin-bottom:3px">${esc(pk.label.replace(/^Planned:\s*/,"").replace(/^⭐[^:]*:\s*/,""))} · peak ${esc(s.alt)}</div>`:""}
+      ${elevSVG(s.day)}
+      <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;margin-top:3px"><span style="color:var(--ok);font-weight:600">▲ ${s.gain}</span><span style="color:var(--txL);font-size:10px">Accurate track on AllTrails</span><span style="color:var(--it);font-weight:600">▼ ${s.loss}</span></div>
+    </div>`:""}
     <div style="font-size:13px;line-height:1.65;color:var(--txM);margin-bottom:10px">${s.notes}</div>
     ${pk?`<div class="nbox" style="background:var(--surB);border:1.5px solid var(--for);margin-bottom:10px">
       <div class="nh" style="color:var(--for);font-size:11.5px">📍 Planned route${pk.label?" · "+esc(pk.label.replace(/^Planned:\s*/,"").replace(/^⭐[^:]*:\s*/,"")):""}</div>
       ${pk.tag?`<div style="margin:4px 0 0"><span style="font-size:9px;padding:1px 6px;border-radius:4px;background:${/scenic/i.test(pk.tag)?"#FBF0DA":"#E6F3EC"};color:${/scenic/i.test(pk.tag)?"var(--amb)":"var(--for)"};font-weight:600">${esc(pk.tag)}</span></div>`:""}
       <div class="nb2" style="margin-top:4px">${esc(pk.why)}</div>
     </div>`:""}
+    ${VIA[s.day]?`<div style="margin-bottom:10px;padding:9px 11px;background:var(--surB);border:1px solid var(--bor);border-radius:8px">
+      <div style="font-size:10px;font-weight:600;color:var(--txL);letter-spacing:.5px;margin-bottom:4px">🧭 WHAT YOU PASS</div>
+      <div style="font-size:11.5px;color:var(--txM);line-height:1.7">${VIA[s.day].map(esc).join(' <span style="color:var(--ambL)">→</span> ')}</div>
+    </div>`:""}
     ${s.start?`<details class="sec"><summary>🚆 Getting to the start</summary><div class="secbody">${Array.isArray(s.start)?s.start.map((b,i)=>`<div style="padding:7px 0;${i?"border-top:1px solid var(--bor);":""}font-size:12px;line-height:1.55"><strong style="color:var(--txt)">${esc(b.l)}</strong> <span style="color:var(--txM)">${esc(b.d)}</span></div>`).join(""):`<div class="nb2">${esc(s.start)}</div>`}</div></details>`:""}
     ${s.restday?`<details class="sec"><summary>🧖 Rest day in Courmayeur — what to do</summary><div class="secbody">${s.restday.map(r=>`<div class="nbox" style="background:var(--surB)"><div class="nh" style="color:var(--for)">${esc(r.t)}</div><div class="nb2">${esc(r.d)}</div></div>`).join("")}</div></details>`:""}
     ${!s.rest?`<a href="${atUrl}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:var(--forM);text-decoration:none;border:1px solid var(--bor);background:var(--surB);border-radius:7px;padding:6px 11px;margin-bottom:10px">🥾 View route on AllTrails →</a>`:""}
-    ${!s.rest&&ELEV[s.day]?`<details class="sec"><summary>📈 Elevation profile <span style="font-weight:400;color:var(--txL);font-size:11px">· approximate</span></summary><div class="secbody" style="padding-bottom:8px">
-      ${pk?`<div style="font-size:10.5px;color:var(--txL);margin-bottom:3px">${esc(pk.label.replace(/^Planned:\s*/,"").replace(/^⭐[^:]*:\s*/,""))} · peak ${esc(s.alt)}</div>`:""}
-      ${elevSVG(s.day)}
-      <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;margin-top:3px"><span style="color:var(--ok);font-weight:600">▲ ${s.gain}</span><span style="color:var(--txL);font-size:10px">Accurate track on AllTrails</span><span style="color:var(--it);font-weight:600">▼ ${s.loss}</span></div>
-    </div></details>`:""}
     ${s.warns.length?`<div class="warn-box"><div class="w">${s.warns.join("<br>")}</div></div>`:""}
     ${s.skip&&s.day!==1?`<details class="sec"><summary>✂️ Dull stretch you can skip</summary><div class="secbody"><div class="nb2">${esc(s.skip)}</div></div></details>`:""}
     ${s.plans.filter(p=>!p.pref).length?`<details class="sec"><summary>🧭 Other route options</summary><div class="secbody">
@@ -948,6 +956,23 @@ function rSplit(){
     </div>`;}).join("");
   const cashRows=CASH.map(r=>`<tr><td style="padding:5px 7px;border-bottom:1px solid var(--bor);font-weight:600;white-space:nowrap">${r.cur}</td><td style="padding:5px 7px;border-bottom:1px solid var(--bor);white-space:nowrap;font-weight:500">${esc(r.amt)}</td><td style="padding:5px 7px;border-bottom:1px solid var(--bor);color:var(--txM)">${esc(r.fr)}</td></tr>`).join("");
   return`<div class="ptitle">Expenses</div>
+  ${(()=>{
+    const dU=iso=>{const t=new Date();t.setHours(0,0,0,0);return Math.round((new Date(iso+"T00:00:00")-t)/864e5);};
+    const dL=iso=>new Date(iso+"T00:00:00").toLocaleDateString("en-AU",{day:"numeric",month:"short"});
+    const cdT=n=>n<0?Math.abs(n)+"d ago":n===0?"today":"in "+n+"d";
+    const cdC=n=>n<=7?"var(--it)":n<=21?"var(--amb)":"var(--txL)";
+    const ONLINE=[{d:"2026-08-10",p:"Appart'Hotel Aiguille Verte · Chamonix",a:"AUD 888.14"},{d:"2026-08-12",p:"Chalet Hôtel Gaï Soleil · Les Contamines",a:"AUD 257.14"},{d:"2026-08-30",p:"Hôtel Crampon · Courmayeur",a:"AUD 655.68"},{d:"2026-09-20",p:"Eastwest Hôtel · Geneva",a:"AUD 895"}];
+    const CASHA=[{d:"2026-09-14",p:"Les Chambres du Soleil · Day 2",a:"€24"},{d:"2026-09-17",p:"Rifugio Bonatti · Day 5",a:"~€190 · cash only"},{d:"2026-09-18",p:"Auberge Maya-Joie · Day 6",a:"~71 CHF"},{d:"2026-09-19",p:"Chalet La Grange · Day 7",a:"~136 CHF · cash only"},{d:"2026-09-21",p:"Auberge la Boërne · Day 9",a:"€24"}];
+    const row=x=>{const n=dU(x.d);return`<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--bor)"><div style="min-width:48px;font-size:12.5px;font-weight:700;color:var(--for)">${dL(x.d)}</div><div style="flex:1;min-width:0"><div style="font-size:12.5px;font-weight:500">${esc(x.p)}</div><div style="font-size:10.5px;font-weight:600;color:${cdC(n)}">${cdT(n)}</div></div><div style="font-size:12.5px;font-weight:700;white-space:nowrap;flex-shrink:0">${esc(x.a)}</div></div>`;};
+    return`<div class="card cp" style="margin-bottom:12px;border-left:3px solid var(--amb)">
+      <div class="serif" style="font-size:17px;font-weight:600;color:var(--for)">💳 Payment schedule</div>
+      <div style="font-size:11px;color:var(--txL);margin:2px 0 10px">When each bill is due — online deadlines first, then cash to hand over on the trek.</div>
+      <div style="font-size:10px;font-weight:700;color:var(--txL);letter-spacing:.5px;margin-bottom:2px">🏦 PAY ONLINE BY</div>
+      ${ONLINE.map(row).join("")}
+      <div style="font-size:10px;font-weight:700;color:var(--txL);letter-spacing:.5px;margin:11px 0 2px">💶 CASH ON ARRIVAL · ON THE TREK</div>
+      ${CASHA.map(row).join("")}
+    </div>`;
+  })()}
   <div style="font-size:13px;color:var(--txM);line-height:1.6;margin-bottom:12px">Shared with Vanessa: accommodation plus the trail meals, lunches and extras bundled into each bill. Split is 50/50 except Geneva, where Vanessa shares only the 23rd night (she leaves the 24th). Each place shows its own currency; the summary converts to AUD at approx rates (€1 = A$${RATE.EUR}, 1 CHF = A$${RATE.CHF}). Settle up on <strong>Beem</strong>.</div>
   <div class="warn-box" style="margin-bottom:10px"><div class="w"><strong>⚠️ Disputed: €251 change fees</strong> kept by montourdumontblanc.com. Refund requested, so NOT counted below. If the refund fails it becomes a shared cost (½ = €125.50). Chase it up before departure.</div></div>
   <div class="card cp" style="margin-bottom:10px">
@@ -1157,7 +1182,7 @@ function rTraining(){
     {icon:"🦿",title:"Vanessa · right ankle stability",sub:"wobbly ankle",note:"Combined balance + strengthening, 4+ weeks consistent, works best. Most need no equipment.",arr:TEX.vanAnkle}
   ];
   return`<div class="ptitle">🏋️ TMB Training Plan</div>
-<div style="font-size:12.5px;color:var(--txM);line-height:1.6;margin-bottom:12px">Addy's full cycle-adapted training plan, imported from the separate training app as a read-only reference. Hard efforts are timed to your highest-energy phases; easy weeks fall on your period, the New Caledonia holiday and the taper. <strong>Vanessa sees all of it</strong> (her elbow + ankle prehab is in the exercise library). Tap any section to open it.</div>
+<div style="font-size:12.5px;color:var(--txM);line-height:1.6;margin-bottom:12px">Addy's full cycle-adapted training plan, imported from the separate training app. Tick off each week's targets as you go (saved on this device). Hard efforts are timed to your highest-energy phases; easy weeks fall on your period, the New Caledonia holiday and the taper. <strong>Vanessa sees all of it</strong> (her elbow + ankle prehab is in the exercise library). Tap any section to open it.</div>
 <div class="card cp" style="margin-bottom:12px;border-left:3px solid ${TDRIVE[cw.drive].col}">
   <div style="font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--txL);margin-bottom:7px">THIS WEEK · ${tDR(cw)}</div>
   <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:9px">
@@ -1178,7 +1203,7 @@ ${PROGS.map(p=>`<details class="sec"><summary>${p.icon} ${p.title}${p.sub?` <spa
   ${TCYCLE.map(p=>{const c=TCS[p.ph];return`<div style="background:${c.bg};border:1px solid ${c.bd};color:${c.tx};border-radius:10px;padding:10px 12px;margin-bottom:7px"><div style="display:flex;align-items:center;gap:8px"><span style="width:9px;height:9px;border-radius:50%;background:${c.dot};flex-shrink:0"></span><strong style="font-size:12.5px">${esc(p.hd)}</strong><span style="margin-left:auto;font-size:10px;font-weight:800;color:${c.dot};white-space:nowrap">${esc(p.push)}</span></div><div style="font-size:11.5px;line-height:1.45;margin-top:4px;opacity:.92">${esc(p.txt)}</div></div>`;}).join("")}
 </div></details>
 <div style="font-size:11px;font-weight:600;color:var(--txL);margin:15px 0 6px;letter-spacing:.5px">TRAINING WEEKS AHEAD</div>
-${TWEEKS.filter(w=>w.end>=today).map(w=>{const isCur=today>=w.start&&today<=w.end,d=TDRIVE[w.drive],c=TCS[tCyc(w)];
+${TWEEKS.filter(w=>w.end>=today).map(w=>{const isCur=today>=w.start&&today<=w.end,d=TDRIVE[w.drive],c=TCS[tCyc(w)];const wtot=w.targets.reduce((a,t)=>a+(t.count||1),0)+(w.hike?1:0);const wdn=w.targets.reduce((a,t,ti)=>a+Math.min(S.train[w.id+"-t"+ti]||0,t.count||1),0)+(w.hike&&(S.train[w.id+"-hike"]||0)>=1?1:0);const wpct=wtot?Math.round(wdn/wtot*100):0;
   return`<details class="sec"${isCur?" open":""}><summary>${w.travel?"🧳":w.flex?"🔀":"📅"} ${tDR(w)}${isCur?` <span style="color:var(--for);font-weight:700">· THIS WEEK</span>`:""}</summary><div class="secbody">
   <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px">
     ${pill(d.col,"#fff","🔥 "+d.lbl)}
@@ -1189,10 +1214,12 @@ ${TWEEKS.filter(w=>w.end>=today).map(w=>{const isCur=today>=w.start&&today<=w.en
   <div style="font-size:12px;line-height:1.5;color:var(--txM);margin-bottom:9px">${w.focus}</div>
   ${w.note?`<div style="font-size:11.5px;font-style:italic;color:var(--txL);background:var(--surB);border-radius:8px;padding:8px 10px;margin-bottom:9px;line-height:1.5">${esc(w.note)}</div>`:""}
   <div style="font-size:10px;font-weight:700;color:var(--txL);letter-spacing:.5px;margin-bottom:3px">TARGETS</div>
-  ${w.targets.map(tg=>`<div style="display:flex;align-items:center;gap:9px;padding:6px 0;border-bottom:1px solid var(--bor)"><div style="width:26px;height:26px;border-radius:7px;background:var(--surB);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">${tg.icon}</div><div style="flex:1;min-width:0"><div style="font-size:12.5px;font-weight:600">${esc(tg.title)}</div><div style="font-size:11px;color:var(--txL)">${esc(tg.meta)}</div></div><div style="font-size:12px;font-weight:800;color:var(--forM);white-space:nowrap;flex-shrink:0">×${tg.count||1}</div></div>`).join("")}
-  ${w.hike?`<div class="nbox" style="background:${w.hike.easy?"#F0EBFA":"#FBF3D6"};border:1px solid ${w.hike.easy?"#D6C9F0":"#F0DCA8"};margin-top:9px;margin-bottom:0"><div class="nh" style="color:${w.hike.easy?"#43307A":"#5C4410"}">${w.hike.title.startsWith("⭐")?"⭐":w.hike.easy?"🌿":"🏔"} ${esc(w.hike.title.replace("⭐ ",""))}</div><div style="font-size:11px;color:${w.hike.easy?"#6E5E96":"#8A7530"};margin:2px 0 4px">${esc(w.hike.meta)}</div><div class="nb2" style="color:var(--txM)">${esc(w.hike.det)}</div></div>`:""}
+  ${w.targets.map((tg,ti)=>{const id=w.id+"-t"+ti,max=tg.count||1,n=Math.min(S.train[id]||0,max),full=n>=max;let pips="";for(let k=0;k<max;k++)pips+=`<span style="width:13px;height:13px;border-radius:4px;border:2px solid ${k<n?"var(--for)":"var(--bor)"};background:${k<n?"var(--for)":"transparent"};display:inline-block"></span>`;return`<div data-train="${id}" data-max="${max}" style="display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid var(--bor);cursor:pointer"><div style="width:26px;height:26px;border-radius:7px;background:${full?"#E6F3EC":"var(--surB)"};display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">${tg.icon}</div><div style="flex:1;min-width:0"><div style="font-size:12.5px;font-weight:600;${full?"color:var(--ok)":""}">${esc(tg.title)}</div><div style="font-size:11px;color:var(--txL)">${esc(tg.meta)}</div></div><div style="display:flex;align-items:center;gap:5px;flex-shrink:0">${max>1?`<span style="display:flex;gap:3px">${pips}</span><span style="font-size:11px;font-weight:800;color:${full?"var(--ok)":"var(--forM)"};min-width:24px;text-align:right">${n}/${max}</span>`:`<span style="width:22px;height:22px;border-radius:50%;border:2px solid ${full?"var(--for)":"var(--bor)"};background:${full?"var(--for)":"transparent"};display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700">${full?"✓":""}</span>`}</div></div>`;}).join("")}
+  ${w.hike?(()=>{const hid=w.id+"-hike",hd=(S.train[hid]||0)>=1;return`<div style="background:${hd?"#E6F3EC":(w.hike.easy?"#F0EBFA":"#FBF3D6")};border:1px solid ${hd?"#BFE3CB":(w.hike.easy?"#D6C9F0":"#F0DCA8")};border-radius:8px;padding:10px;margin-top:9px"><div data-train="${hid}" data-max="1" style="display:flex;align-items:center;gap:8px;cursor:pointer"><div class="nh" style="flex:1;margin:0;color:${hd?"#1C5C36":(w.hike.easy?"#43307A":"#5C4410")}">${w.hike.title.startsWith("⭐")?"⭐":w.hike.easy?"🌿":"🏔"} ${esc(w.hike.title.replace("⭐ ",""))}</div><span style="width:22px;height:22px;border-radius:50%;border:2px solid ${hd?"var(--for)":"#C9BFA8"};background:${hd?"var(--for)":"transparent"};display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;flex-shrink:0">${hd?"✓":""}</span></div><div style="font-size:11px;color:${w.hike.easy?"#6E5E96":"#8A7530"};margin:3px 0 4px">${esc(w.hike.meta)}</div><div class="nb2" style="color:var(--txM)">${esc(w.hike.det)}</div></div>`;})():""}
+  <div class="mbar" style="height:6px;margin-top:10px"><div class="mfil" style="width:${wpct}%;background:${wpct===100?"var(--ok)":"var(--for)"}"></div></div>
+  <div style="font-size:10.5px;color:${wpct===100?"var(--ok)":"var(--txL)"};text-align:right;margin-top:3px;font-weight:600">${wdn}/${wtot} done</div>
 </div></details>`;}).join("")}
-<div class="empty" style="padding:14px 0 4px">Read-only mirror of the training app · TMB departs 13 Sep 2026</div>`;
+<div class="empty" style="padding:14px 0 4px">Tap a target to tick it off · progress saved on this device · TMB departs 13 Sep 2026</div>`;
 }
 
 // ── BIND ──────────────────────────────────────────────────────────────────────
@@ -1202,6 +1229,7 @@ function bind(){
   document.querySelectorAll("input[data-ac]").forEach(i=>i.addEventListener("input",()=>{S.acNotes[i.dataset.ac]=i.value;save("tmb_acnotes",S.acNotes);}));
   document.querySelectorAll(".gi[data-gear]").forEach(el=>el.addEventListener("click",()=>{const k=el.dataset.gear;S.gear[k]=!S.gear[k];save("tmb_gear",S.gear);render();}));
   document.querySelectorAll(".todo-item[data-todo]").forEach(el=>el.addEventListener("click",()=>{const k=el.dataset.todo;S.todos[k]=!S.todos[k];save("tmb_todos",S.todos);render();}));
+  document.querySelectorAll("[data-train]").forEach(el=>el.addEventListener("click",()=>{const id=el.dataset.train,max=parseInt(el.dataset.max)||1;S.train[id]=((S.train[id]||0)+1)%(max+1);save("tmb_train",S.train);render();}));
   document.querySelectorAll("[data-jopen]").forEach(b=>b.addEventListener("click",()=>{const d=parseInt(b.dataset.jopen);S.activeJournal=d;S.jDraft[d]=S.journal[d]||"";render();}));
   const jt=document.getElementById("jtext");
   if(jt){
