@@ -656,6 +656,26 @@ function loopMap(day){
     ${hl}${arrow}${dots}${labels}
   </svg>`;
 }
+// Sunrise/sunset (classic sunrise equation) — tz is the local UTC offset (CEST = +2 in September for FR/IT/CH).
+function sunTimes(y,m,d,lat,lng,tz){
+  const rad=Math.PI/180;
+  const N1=Math.floor(275*m/9),N2=Math.floor((m+9)/12),N3=1+Math.floor((y-4*Math.floor(y/4)+2)/3),N=N1-(N2*N3)+d-30;
+  const f=rising=>{
+    const lngHour=lng/15,t=rising?N+((6-lngHour)/24):N+((18-lngHour)/24);
+    const M=(0.9856*t)-3.289;
+    let L=M+(1.916*Math.sin(rad*M))+(0.020*Math.sin(rad*2*M))+282.634;L=((L%360)+360)%360;
+    let RA=Math.atan(0.91764*Math.tan(rad*L))/rad;RA=((RA%360)+360)%360;
+    RA+=(Math.floor(L/90)*90-Math.floor(RA/90)*90);RA/=15;
+    const sinDec=0.39782*Math.sin(rad*L),cosDec=Math.cos(Math.asin(sinDec));
+    const cosH=(Math.cos(rad*90.833)-(sinDec*Math.sin(rad*lat)))/(cosDec*Math.cos(rad*lat));
+    if(cosH>1||cosH<-1)return "—";
+    let H=rising?360-Math.acos(cosH)/rad:Math.acos(cosH)/rad;H/=15;
+    let UT=((H+RA-(0.06571*t)-6.622)-lngHour)%24;UT=(UT+24)%24;
+    let loc=((UT+tz)%24+24)%24,hh=Math.floor(loc),mm=Math.round((loc-hh)*60);if(mm===60){mm=0;hh=(hh+1)%24;}
+    return hh+":"+String(mm).padStart(2,"0");
+  };
+  return {rise:f(true),set:f(false)};
+}
 function rStages(){
   return`<div class="ptitle">10-Day Trail Itinerary</div>`+
   STAGES.map(s=>{
@@ -667,6 +687,7 @@ function rStages(){
     const atUrl=s.alltrails||("https://www.alltrails.com/explore?q="+encodeURIComponent(s.from+" to "+s.to+" Tour du Mont Blanc"));
     const pk=s.plans.find(p=>p.pref);
     const _hrs=(s.time.match(/\d+/g)||[]).map(Number),maxH=_hrs.length?Math.max(..._hrs):0,longDay=!s.rest&&maxH>=8;
+    const _ll=DAYSEG[s.day]?MAPNODES[DAYSEG[s.day][1]].ll:[45.92,6.87],_sun=sunTimes(2026,9,parseInt(s.date)||1,_ll[0],_ll[1],2);
     return`<div class="card" style="margin-bottom:8px">
   <button class="srow" data-stage="${s.day}">
     <div class="dbage" style="width:27px;height:27px;border-radius:6px;background:${s.rest?"var(--sto)":dbg};display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:600;flex-shrink:0">${s.day}</div>
@@ -689,6 +710,7 @@ function rStages(){
       <div class="dcell"><div class="l">Elevation loss</div><div class="v">${s.loss}</div></div>
       <div class="dcell"><div class="l">Max altitude</div><div class="v">${s.alt}</div></div>`}
     </div>
+    <div style="display:flex;gap:14px;font-size:11.5px;color:var(--txM);margin-bottom:10px;align-items:center;flex-wrap:wrap"><span>🌅 Sunrise <strong style="color:var(--txt)">${_sun.rise}</strong></span><span>🌇 Sunset <strong style="color:var(--txt)">${_sun.set}</strong></span><span style="color:var(--txL);font-size:10px">CEST · same time in FR/IT/CH</span></div>
     ${!s.rest?`<a href="${atUrl}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:var(--forM);text-decoration:none;border:1px solid var(--bor);background:var(--surB);border-radius:7px;padding:7px 12px;margin-bottom:10px">🥾 View route on AllTrails →</a>`:""}
     ${!s.rest&&ELEV[s.day]?`<div style="background:var(--surB);border:1px solid var(--bor);border-radius:10px;padding:10px 12px 6px;margin-bottom:10px">
       <div style="font-size:10px;font-weight:600;color:var(--txL);letter-spacing:.5px;margin-bottom:2px">📈 ELEVATION PROFILE <span style="font-weight:400;text-transform:none">· approximate</span></div>
@@ -1198,7 +1220,7 @@ function tCurWk(){const t=tToday();let i=TWEEKS.findIndex(w=>t>=w.start&&t<=w.en
 function tDaysTrek(){const n=new Date();n.setHours(0,0,0,0);return Math.max(0,Math.ceil((new Date("2026-09-13")-n)/864e5));}
 function tDR(w){const sd=new Date(w.start+"T00:00:00"),ed=new Date(w.end+"T00:00:00");const f={day:"numeric",month:"short"};return sd.toLocaleDateString("en-AU",f)+" – "+ed.toLocaleDateString("en-AU",f);}
 function tCyc(w){return w.cyc.includes("→")?w.cyc.split("→")[0]:w.cyc;}
-function tExRows(arr){return arr.map(e=>`<div style="padding:7px 0;border-bottom:1px solid var(--bor)"><div style="display:flex;gap:8px;align-items:baseline"><strong style="font-size:12.5px;color:var(--txt)">${esc(e.n)}</strong>${e.s?`<span style="margin-left:auto;font-size:11px;font-weight:700;color:var(--forM);white-space:nowrap;flex-shrink:0">${esc(e.s)}</span>`:""}</div>${e.c?`<div style="font-size:11.5px;color:var(--txL);margin-top:2px;line-height:1.45">${esc(e.c)}</div>`:""}${e.flag?`<div style="font-size:10.5px;color:var(--warn);font-weight:600;margin-top:3px">⚠ ${esc(e.flag)}</div>`:""}<a href="${TV(e.y)}" target="_blank" rel="noopener" style="display:inline-block;margin-top:4px;font-size:11px;font-weight:700;color:var(--it);text-decoration:none">▶ Watch demo</a></div>`).join("");}
+function tExRows(arr){return arr.map(e=>`<div style="padding:7px 0;border-bottom:1px solid var(--bor)"><div style="display:flex;gap:8px;align-items:baseline"><strong style="font-size:12.5px;color:var(--txt)">${esc(e.n)}</strong>${e.s?`<span style="margin-left:auto;font-size:11px;font-weight:700;color:var(--forM);white-space:nowrap;flex-shrink:0">${esc(e.s)}</span>`:""}</div>${e.c?`<div style="font-size:11.5px;color:var(--txL);margin-top:2px;line-height:1.45">${esc(e.c)}</div>`:""}${e.flag?`<div style="font-size:10.5px;color:var(--warn);font-weight:600;margin-top:3px">⚠ ${esc(e.flag)}</div>`:""}<div style="display:flex;gap:16px;margin-top:5px"><a href="https://www.google.com/search?tbm=isch&q=${encodeURIComponent(e.n+" exercise proper form")}" target="_blank" rel="noopener" style="font-size:11px;font-weight:700;color:var(--forM);text-decoration:none">🖼 Photos</a><a href="${TV(e.y)}" target="_blank" rel="noopener" style="font-size:11px;font-weight:700;color:var(--it);text-decoration:none">▶ Watch demo</a></div></div>`).join("");}
 
 function rTraining(){
   const ci=tCurWk(),cw=TWEEKS[ci],today=tToday();
