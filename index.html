@@ -851,6 +851,7 @@ ${Object.entries(TODOS).map(([cat,items])=>{
   return`<div class="card" style="margin-bottom:10px">
   <div class="shdr"><span style="font-weight:500;font-size:13px">${cat}</span><span style="font-size:11px;color:var(--txL)">${cd}/${items.length}</span></div>
   <div style="padding:4px 14px">
+    ${cat==="💳 Payments Due"?(()=>{const aug=items.filter(i=>/Aug/.test(i.date||"")).reduce((s,i)=>{const m=(i.task.match(/AUD\s*([\d,]+\.?\d*)/)||[])[1];return s+(m?parseFloat(m.replace(/,/g,"")):0);},0);return`<div style="background:var(--surB);border:1px solid var(--bor);border-radius:8px;padding:8px 11px;margin:6px 2px 9px;display:flex;justify-content:space-between;align-items:center;gap:8px"><span style="font-size:12px;font-weight:600;color:var(--txt)">💰 To pay in August (before arriving)</span><span style="font-size:14.5px;font-weight:700;color:var(--for);white-space:nowrap">AUD ${aug.toLocaleString("en-AU",{minimumFractionDigits:2,maximumFractionDigits:2})}</span></div>`;})():""}
     ${items.map(item=>{
       const done=!!S.todos[item.id];
       return`<div class="todo-item${done?" done":""}" data-todo="${item.id}">
