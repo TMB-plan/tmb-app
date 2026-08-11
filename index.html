@@ -261,7 +261,7 @@ const STAGES = [
 ];
 
 const STAYS = [
-  {id:"s0",night:"11–12 Sep",place:"Appart'Hotel Aiguille Verte",loc:"Chamonix",type:"Hotel",status:"confirmed",cost:"AUD 888.14",paid:"–",payBy:"10 Aug",note:"Cancel deadline: 11 Aug"},
+  {id:"s0",night:"11–12 Sep",place:"Appart'Hotel Aiguille Verte",loc:"Chamonix",type:"Hotel",status:"confirmed",cost:"AUD 888.14",paid:"AUD 888.14",payBy:"PAID",note:"Paid via Booking.com. €500 card deposit on arrival (refunded). Cancel deadline: 11 Aug"},
   {id:"s1",night:"13 Sep · Day 1",place:"Chalet Hôtel Gaï Soleil",loc:"Les Contamines",type:"Hotel",status:"confirmed",cost:"AUD 257.14",paid:"–",payBy:"12 Aug",note:"288 chemin des loyers, 74170 Les Contamines-Montjoie. ROOM ONLY, no breakfast/dinner. Breakfast 13€pp buffet optional; dinner 25€pp via Maison Noël (32 m / 1 min), add with hotel if wanted. Cancel deadline: 13 Aug"},
   {id:"s2",night:"14 Sep · Day 2",place:"Les Chambres du Soleil",loc:"Les Chapieux",type:"Hotel",status:"confirmed",cost:"€194.24 + 24€",paid:"€194.24",payBy:"PAID",note:"Double, private bathroom, half-board (fixed dinner 19:00 + breakfast). 📵 ZONE BLANCHE, no wifi/signal. Private double room (not a dorm), so no liner needed, bring a headlamp for the limited lighting; earplugs if a light sleeper. Arrive by 19:00, depart by 09:00. Balance on arrival: 24€ (2× Day 3 packed lunch) + tourist tax"},
   {id:"s3",night:"15–16 Sep · Days 3–4",place:"Hôtel Crampon",loc:"Courmayeur (2 nights)",type:"Hotel",status:"confirmed",cost:"AUD 655.68",paid:"–",payBy:"30 Aug",note:"Double/twin, balcony, breakfast only. Cancel deadline: 31 Aug"},
@@ -291,7 +291,7 @@ const STAYINFO={
 
 // Payment status per stay: have we paid, what is still due (incl food/extras), total on arrival. Keyed by stay id.
 const PAYINFO={
-  s0:"Not yet paid. Pay AUD 888.14 online by 10 Aug. €500 card deposit on arrival (refunded).",
+  s0:"✓ Paid AUD 888.14 via Booking.com. €500 card deposit on arrival (refunded).",
   s1:"Not yet paid. Pay AUD 257.14 online by 12 Aug (room only). On arrival: any breakfast/dinner add-ons if taken.",
   s2:"Room + half-board prepaid (€194.24). On arrival: €24 (2× Day 3 lunch) + tourist tax.",
   s3:"Not yet paid. Pay AUD 655.68 online by 30 Aug (2 nights, B&B). Nothing due on arrival.",
@@ -325,14 +325,15 @@ const GEAR = {
     {item:"Merino base-layer leggings (125)",rec:"Kathmandu K-Merino 125",owned:true,why:"Warmth under trousers on cold cols and around the refuge at night."},
     {item:"Hiking t-shirt × 2",rec:"Have 1 merino tee. Add a 2nd (merino or synthetic) for hot back-to-back days",owned:false,why:"Cooler option for warm valley sections; two lets one dry while you wear the other."},
     {item:"Merino trekking socks × 3 pairs (mid-weight)",rec:"Researching: Darn Tough Hiker Micro Crew / Boot Full Cushion / Injinji",owned:false,why:"Cushioning and blister prevention; merino resists odour over consecutive days. Rotate 3 so feet start dry."},
-    {item:"Merino underwear × 6–8",rec:"Love the Icebreaker Siren. Have 3, buy several more",owned:false,why:"One per day plus spares, quick-dry for hand-washing at refuges. You wanted way more, so aim high."},
-    {item:"Sports bras × 3 (Icebreaker Siren)",rec:"Love the Icebreaker Siren. Have 1, buy at least 2 more",owned:false,why:"Merino support that washes and dries overnight. Sticking to the brand you like."},
+    {item:"Compression socks",rec:"",owned:false,why:"Boost circulation and reduce leg fatigue/swelling on back-to-back long days; also good for the travel legs."},
+    {item:"Merino underwear × 6–8",rec:"Love the Icebreaker Siren. Have 3 + ✓ bought Merino Blend 125 Cool-Lite Sprite Hipster (Black, WM). Keep buying toward 6–8",owned:false,why:"One per day plus spares, quick-dry for hand-washing at refuges. You wanted way more, so aim high."},
+    {item:"Sports bras × 3 (Icebreaker Siren)",rec:"Love the Icebreaker Siren. Have 1 + ✓ bought Merino 150 Siren Cami (Black, WM) with ✓ Merino 150 Siren Bra Inserts (Black, WM). Buy 1 more for 3",owned:false,why:"Merino support that washes and dries overnight. Sticking to the brand you like."},
   ],
   "Camp & Sleep":[
     {item:"Lightweight down jacket",rec:"Rab Microlight Alpine Down Hoody (W)",owned:true,why:"Packable warmth for cold col tops and chilly refuge evenings."},
     {item:"Merino 250 long-sleeve (camp)",rec:"Kathmandu K-Merino 250",owned:true,why:"Warm dry top to change into at the refuge after hiking."},
     {item:"Camp leggings",rec:"lululemon",owned:true,why:"Comfortable dry layer for evenings and sleeping."},
-    {item:"Merino singlet × 1",rec:"Don't have one yet. Considering a top with an integrated bra (NOT the Kathmandu, disliked it)",owned:false,why:"Light layering / sleep top; an integrated-bra version could save carrying a separate bra."},
+    {item:"Merino singlet × 1",rec:"✓ Bought Icebreaker Merino 150 Siren Tank — Flint Blue, WM",owned:true,why:"Light layering / sleep top; an integrated-bra version could save carrying a separate bra."},
     {item:"PJ top: Merino 200 long-sleeve",rec:"Icebreaker Merino 200 Oasis LS",owned:true,why:"Dedicated dry sleepwear keeps your hiking layers for hiking."},
     {item:"PJ bottoms: Merino 200 leggings",rec:"Icebreaker Merino 200 Oasis",owned:true,why:"Warm sleep layer for cold refuge nights."},
   ],
@@ -344,8 +345,9 @@ const GEAR = {
   ],
   "Footwear":[
     {item:"Waterproof hiking boots (broken-in, ankle support)",rec:"La Sportiva Ultra Raptor II Mid Wide GTX",owned:true,why:"Ankle support and grip for long rocky descents; must be broken in to avoid blisters."},
-    {item:"Camp sandals / flip flops",rec:"Flip flops owned",owned:true,why:"Air out feet at the refuge, and needed for shared showers."},
+    {item:"Camp sandals / flip flops",rec:"✓ Bought Teva Original Universal (W) — Black, Size 9. Flip flops also owned",owned:true,why:"Air out feet at the refuge, and needed for shared showers."},
     {item:"Gaiters (low profile)",rec:"Brands still to research",owned:false,why:"Keep scree, mud and wet morning grass out of your boots."},
+    {item:"Microspikes",rec:"✓ Given (borrowed/gifted)",owned:true,why:"Grip for any early-morning ice or old snow patches on high cols late in the season."},
   ],
   "Accessories":[
     {item:"Wide-brim sun hat",rec:"",owned:false,why:"High-altitude sun is intense; shades face and neck on exposed balconies."},
@@ -375,6 +377,8 @@ const GEAR = {
     {item:"Sunscreen SPF 50+ (small tube)",rec:"",owned:false,why:"Altitude sun burns fast, even through cloud."},
     {item:"Soap (multi-use)",rec:"Dr Bronner's",owned:false,why:"One bottle for body, hair and washing clothes."},
     {item:"Small shampoo + conditioner",rec:"",owned:false,why:"Travel-size for the few showers you'll get."},
+    {item:"Feminine wipes",rec:"",owned:false,why:"Freshen up on days with no shower; useful when refuge washing is limited."},
+    {item:"Tissue paper / travel toilet roll",rec:"",owned:false,why:"Trail toilets and refuges often run out; carry your own plus a small ziplock for used paper."},
     {item:"Blister kit",rec:"AMK Blister Medic (+ Compeed / Leukotape)",owned:false,why:"Blisters are the most likely thing to end a day; treat them early."},
     {item:"First aid kit + antiseptic wipes",rec:"AMK Hiker or Ultralight/Watertight .7",owned:false,why:"Basic wound care miles from a pharmacy."},
     {item:"Ibuprofen + paracetamol",rec:"",owned:false,why:"Manage aches and swelling on back-to-back long days."},
@@ -383,7 +387,7 @@ const GEAR = {
   ],
   "Maybe / Extra":[
     {item:"Hiking shorts",rec:"",owned:false,why:"Optional for hot valley days if you'd rather not zip off trousers."},
-    {item:"Top with integrated bra (research)",rec:"NOT the Kathmandu one. Could replace a separate bra",owned:false,why:"Might cut one item if comfy enough for both support and layering."},
+    {item:"Top with integrated bra (research)",rec:"✓ Bought Icebreaker Merino 150 Siren Cami (Black, WM) + Siren Bra Inserts — gives built-in support",owned:true,why:"Might cut one item if comfy enough for both support and layering."},
   ],
   "Navigation & Documents":[
     {item:"Offline maps + GPX (Organic Maps or Gaia GPS)",rec:"AllTrails / Maps.me as backup",owned:false},
@@ -407,7 +411,7 @@ const TODOS = {
     {id:"t7",task:"Day 8 (Champex → Trient), CHECK & DECIDE the route: planned is the Bovine route, but the Fenêtre d'Arpette high variant (2,665 m, steeper, 14.2 km / +1,231 m) is drawn as an option — confirm which to walk based on weather + the ankle",date:"On trail"},
   ],
   "💳 Payments Due":[
-    {id:"p0",task:"Pay Appart'Hotel Aiguille Verte, AUD 888.14",date:"10 Aug"},
+    {id:"p0",task:"✓ PAID Appart'Hotel Aiguille Verte, AUD 888.14 (Booking.com)",date:"Paid"},
     {id:"p1",task:"Pay Chalet Hôtel Gaï Soleil, AUD 257.14",date:"12 Aug"},
     {id:"p2",task:"Pay Hôtel Crampon, AUD 655.68",date:"30 Aug"},
     {id:"p3",task:"Pay Eastwest Hôtel by Malone (Geneva), AUD 895",date:"20 Sep"},
@@ -1008,7 +1012,7 @@ function rSplit(){
   const aud=n=>"AUD "+n.toLocaleString("en-AU",{minimumFractionDigits:2,maximumFractionDigits:2});
   // Shared accommodations only (Geneva excluded: VL not coming). room=room price, paidRoom=amount of room already paid, extra=on-arrival extras in extraCur.
   const ITEMS=[
-    {id:"s0",name:"Aiguille Verte · Chamonix",night:"11–12 Sep · pre-trek",cur:"AUD",room:888.14,paidRoom:0,when:"Pay online by 10 Aug",incl:"Apartment, room only",note:"Split depends on VL's arrival (11th/12th): if she lands on the 12th, AW covers the 11th and they split only the 12th."},
+    {id:"s0",name:"Aiguille Verte · Chamonix",night:"11–12 Sep · pre-trek",cur:"AUD",room:888.14,paidRoom:888.14,incl:"Apartment, room only",note:"Split depends on VL's arrival (11th/12th): if she lands on the 12th, AW covers the 11th and they split only the 12th."},
     {id:"s1",name:"Gaï Soleil · Les Contamines",night:"13 Sep · Day 1",cur:"AUD",room:257.14,paidRoom:0,when:"Pay online by 12 Aug",incl:"Room only (breakfast/dinner are paid extras if taken)"},
     {id:"s2",name:"Les Chambres du Soleil · Les Chapieux",night:"14 Sep · Day 2",cur:"EUR",room:194.24,paidRoom:194.24,incl:"Half-board (dinner + breakfast)",extraCur:"EUR",extra:24},
     {id:"s3",name:"Hôtel Crampon · Courmayeur",night:"15–16 Sep · Days 3–4",cur:"AUD",room:655.68,paidRoom:0,when:"Pay online by 30 Aug",incl:"B&B (breakfast only), 2 nights"},
@@ -1027,6 +1031,7 @@ function rSplit(){
     {cur:"CHF",amt:"~136",fr:"Chalet La Grange (Day 7): 99 room balance + 30€ picnic + tax (or pay in €, card +3%)"},
     {cur:"CHF",amt:"~71",fr:"Maya-Joie (Day 6): dinner + picnic + tax (card ok, carry as backup)"}
   ];
+  const VLPAID=1989; // AUD Vanessa (VL) has paid toward her share so far
   let gT=0,gP=0,compShare=0;
   ITEMS.forEach(it=>{const ta=it.room*RATE[it.cur]+(it.extra?it.extra*RATE[it.extraCur]:0);gT+=ta;gP+=it.paidRoom*RATE[it.cur];compShare+=(it.cShare!=null?it.cShare:ta/2);});
   const cards=ITEMS.map(it=>{
@@ -1050,6 +1055,8 @@ function rSplit(){
     <div class="budget-row"><div style="font-size:12.5px">Paid so far (AW)</div><div class="b-amt" style="color:var(--ok)">${aud(gP)}</div></div>
     <div class="budget-row"><div style="font-size:12.5px">Still to pay</div><div class="b-amt" style="color:var(--amb)">${aud(gT-gP)}</div></div>
     <div class="budget-row"><div style="font-size:13px;font-weight:600">VL's share (Beem)</div><div class="b-amt" style="font-weight:600">${aud(compShare)}</div></div>
+    <div class="budget-row"><div style="font-size:12.5px">VL paid so far</div><div class="b-amt" style="color:var(--ok)">${aud(VLPAID)}</div></div>
+    <div class="budget-row"><div style="font-size:12.5px">VL still owes</div><div class="b-amt" style="color:var(--amb)">${aud(compShare-VLPAID)}</div></div>
     <div class="budget-row"><div style="font-size:12.5px">AW's share</div><div class="b-amt">${aud(gT-compShare)}</div></div>
   </div>
   ${(()=>{
@@ -1057,7 +1064,7 @@ function rSplit(){
     const dL=iso=>new Date(iso+"T00:00:00").toLocaleDateString("en-AU",{day:"numeric",month:"short"});
     const cdT=n=>n<0?Math.abs(n)+"d ago":n===0?"today":"in "+n+"d";
     const cdC=n=>n<=7?"var(--it)":n<=21?"var(--amb)":"var(--txL)";
-    const ONLINE=[{d:"2026-08-10",p:"Appart'Hotel Aiguille Verte · Chamonix",a:"AUD 888.14"},{d:"2026-08-12",p:"Chalet Hôtel Gaï Soleil · Les Contamines",a:"AUD 257.14"},{d:"2026-08-30",p:"Hôtel Crampon · Courmayeur",a:"AUD 655.68"},{d:"2026-09-20",p:"Eastwest Hôtel · Geneva",a:"AUD 895"}];
+    const ONLINE=[{d:"2026-08-12",p:"Chalet Hôtel Gaï Soleil · Les Contamines",a:"AUD 257.14"},{d:"2026-08-30",p:"Hôtel Crampon · Courmayeur",a:"AUD 655.68"},{d:"2026-09-20",p:"Eastwest Hôtel · Geneva",a:"AUD 895"}];
     const CASHA=[{d:"2026-09-14",p:"Les Chambres du Soleil · Day 2",a:"€24"},{d:"2026-09-17",p:"Rifugio Bonatti · Day 5",a:"~€190 · cash only"},{d:"2026-09-18",p:"Auberge Maya-Joie · Day 6",a:"~71 CHF"},{d:"2026-09-19",p:"Chalet La Grange · Day 7",a:"~136 CHF · cash only"},{d:"2026-09-21",p:"Auberge la Boërne · Day 9",a:"€24"}];
     const row=x=>{const n=dU(x.d);return`<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--bor)"><div style="min-width:48px;font-size:12.5px;font-weight:700;color:var(--for)">${dL(x.d)}</div><div style="flex:1;min-width:0"><div style="font-size:12.5px;font-weight:500">${esc(x.p)}</div><div style="font-size:10.5px;font-weight:600;color:${cdC(n)}">${cdT(n)}</div></div><div style="font-size:12.5px;font-weight:700;white-space:nowrap;flex-shrink:0">${esc(x.a)}</div></div>`;};
     return`<div class="card cp" style="margin-bottom:12px;border-left:3px solid var(--amb)">
