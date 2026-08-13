@@ -1085,11 +1085,14 @@ function rSplit(){
     <div class="budget-row"><div style="font-size:13px">Total (both of you)</div><div class="b-amt" style="font-size:15px">${aud(gT)}</div></div>
     <div class="budget-row"><div style="font-size:12.5px">Addy's half</div><div class="b-amt">${aud(gT-compShare)}</div></div>
     <div class="budget-row"><div style="font-size:12.5px">Vanessa's half</div><div class="b-amt">${aud(compShare)}</div></div>
+    <div style="font-size:10px;font-weight:700;color:var(--txL);letter-spacing:.5px;margin:13px 0 2px">PAID TO ACCOMMODATIONS · ADDY</div>
+    <div class="budget-row"><div style="font-size:12.5px">Addy has paid so far</div><div class="b-amt" style="color:var(--ok)">${aud(gP)}</div></div>
+    <div class="budget-row"><div style="font-size:12.5px">Still to pay (mostly cash on the trek)</div><div class="b-amt" style="color:var(--amb)">${aud(gT-gP)}</div></div>
     <div style="font-size:10px;font-weight:700;color:var(--txL);letter-spacing:.5px;margin:13px 0 2px">SETTLING UP · VANESSA → ADDY</div>
     <div class="budget-row"><div style="font-size:12.5px">Vanessa's share of the cost</div><div class="b-amt">${aud(compShare)}</div></div>
     <div class="budget-row"><div style="font-size:12.5px">Vanessa has paid (Beem)</div><div class="b-amt" style="color:var(--ok)">− ${aud(VLPAID)}</div></div>
     ${(()=>{const bal=compShare-VLPAID;return bal>0.5?`<div class="budget-row" style="border-bottom:none"><div style="font-size:13px;font-weight:700">Vanessa still owes</div><div class="b-amt" style="font-weight:700;color:var(--amb)">${aud(bal)}</div></div>`:bal<-0.5?`<div class="budget-row" style="border-bottom:none"><div style="font-size:13px;font-weight:700">Overpaid — Addy owes Vanessa</div><div class="b-amt" style="font-weight:700;color:var(--it)">${aud(-bal)}</div></div>`:`<div class="budget-row" style="border-bottom:none"><div style="font-size:13px;font-weight:700">Settled ✓</div><div class="b-amt" style="font-weight:700;color:var(--ok)">AUD 0.00</div></div>`;})()}
-    <div style="font-size:10.5px;color:var(--txL);margin-top:9px;line-height:1.5">Cashflow note: of the shared bills, Addy has prepaid ${aud(gP)} so far and ${aud(gT-gP)} is still to pay (mostly cash on the trek). Vanessa's balance above is her full half, regardless of who fronts each bill.</div>
+    <div style="font-size:10.5px;color:var(--txL);margin-top:9px;line-height:1.5">Addy fronts the shared bills, so "paid so far" includes Vanessa's portion; she repays it via Beem. Vanessa's balance is her full half regardless of who pays each bill.</div>
   </div>
   ${(()=>{
     const dU=iso=>{const t=new Date();t.setHours(0,0,0,0);return Math.round((new Date(iso+"T00:00:00")-t)/864e5);};
