@@ -184,7 +184,7 @@ const STAGES = [
    warns:["✅ Gaï Soleil room now PAID in full"]},
   {day:2,date:"14 Sep",from:"Les Contamines",to:"Les Chapieux",dist:"~18.5 km",gain:"+1,316 m",loss:"−929 m",time:"7–9 hrs",alt:"2,483 m",country:"FR",diff:5,
    notes:"First major climb over Col du Bonhomme. No shuttle bus today, walk from hotel. Buy your trail lunch in Les Contamines before leaving.",
-   meals:{b:"Gaï Soleil, room only; breakfast 13€pp buffet optional",l:"Buy at Carrefour Montagne (310 m) or Proust (440 m) in Les Contamines before leaving",d:"Les Chambres du Soleil, half-board, fixed menu 19:00"},
+   meals:{b:"Gaï Soleil, room only; breakfast 13€pp buffet optional",l:"EITHER buy it in Les Contamines before leaving (Carrefour Montagne 310 m, or Proust 440 m) OR eat on the trail: Refuge de Nant Borrant early on (~1.5 h, tarts and omelettes) or Refuge de la Croix du Bonhomme at the high point (~4.5 h, hot soup and gratin). ⚠️ Refuge de la Balme is CLOSED from 14 Sep, so whichever you choose, carry enough food and water for the long climb to the cols",d:"Les Chambres du Soleil, half-board, fixed menu 19:00"},
    physio:"Pace the ascent conservatively, left hip will be working hard on sustained climbs. Rest stops every 40–50 min. Don't push the first big day.",
    weather:"Col du Bonhomme (2,329 m) is dangerously exposed in storm or whiteout and has no on-trail alternative. If the forecast is bad, wait a day in Les Contamines, or go around by road: taxi Les Contamines → Bourg-Saint-Maurice (~€70), then the seasonal Chapieux navette or a taxi up the Vallée des Glaciers to Les Chapieux.",
    escape:"Remote day. Refuge de la Croix du Bonhomme, just past the col, is the shelter and help point. Before the col: return to Les Contamines, taxi → Bourg-Saint-Maurice, then navette/taxi to Les Chapieux. After the col: it is downhill to the Les Chapieux road-head where a Bourg-Saint-Maurice taxi (~€60) can collect. Les Chapieux is zone blanche, arrange any pickup before you lose signal.",
@@ -245,7 +245,7 @@ const STAGES = [
    warns:["🛒 LAST proper shop before Chamonix — buy Day 9 lunch supplies here. Resupply here!"]},
   {day:8,date:"20 Sep",from:"Champex-Lac",to:"Trient",dist:"~14.2 km",gain:"+1,231 m",loss:"−1,393 m",time:"7–9 hrs",alt:"2,665 m",country:"CH",diff:5,
    notes:"⭐ FENÊTRE D'ARPETTE — the spectacular high variant, and the one you're walking. Shorter than Bovine but far steeper: a sustained ~1,200 m climb up Val d'Arpette to the notch at 2,665 m, facing the Trient glacier, then a long rocky descent past the glacier to Trient. ⏰ START EARLY — 7–9 hrs plus stops, and dinner at Auberge du Mont Blanc is a fixed half-board sitting. Leave Chalet La Grange at 08:15 (the room is held only to that) or earlier if you can. ⚠️ Commit at the bottom: once you start up Val d'Arpette there is no bail-out until you are over the col. Needs settled weather and dry rock — the descent is boulder-strewn and slow when wet. If the forecast is poor, take the Bovine route instead (see the backup below).",
-   meals:{b:"Chalet La Grange",l:"Packed lunch from Chalet La Grange (ordered, 30€ on arrival)",d:"Auberge du Mont Blanc, HALF BOARD CONFIRMED ✅ (dinner included). Flag dietary needs (fondue)"},
+   meals:{b:"Chalet La Grange",l:"Packed lunch from Chalet La Grange (2× picnic, €20 total, in the CHF 126.20 balance). ⚠️ Carry it — on the Fenêtre d'Arpette there is no food between the Relais d'Arpette and the Chalet du Glacier",d:"Auberge du Mont Blanc, HALF BOARD CONFIRMED ✅ (dinner included). Flag dietary needs (fondue)"},
    physio:"⚠️ The hardest combination of the trek after Day 3: a sustained 1,200 m climb then a 1,393 m boulder descent. Right ankle brace from the col, poles the whole way down. Left hip activation before you start. Private twin tonight (sauna on site) — use it.",
    weather:"⚠️ The Fenêtre d'Arpette is the weather-sensitive choice: exposed at 2,665 m, snow-prone in late September and treacherous on wet boulders. Make the call at breakfast in Champex. If the forecast is anything but settled, walk the Bovine route instead (16.5 km, +742 m, 5–6 hrs, see the backup below) — it is the standard foul-weather line and ends at the same bed. If both are out: bus 271 Champex → Orsières, train Orsières → Martigny, then Postbus 213 Martigny → Col de la Forclaz → Trient.",
    escape:"⚠️ Almost no escape once committed. Before the climb: turn back down Val d'Arpette to Champex, then bus 271 → Orsières, train → Martigny, Postbus 213 → Trient. After the Fenêtre: the only way out is down past the Trient glacier to Chalet du Glacier and on to Trient. On the Bovine backup you can bail at Col de la Forclaz onto Postbus 213 → Trient. No ATM or shop in Trient, carry cash.",
@@ -433,6 +433,16 @@ const TODOS = {
     {id:"p6",task:"Cash on arrival, Maya-Joie (Day 6): CHF 71.20 (CHF 40 dinner + CHF 24 picnic + CHF 7.20 tax), cash/euro/card",date:"Carry"},
     {id:"p7",task:"Cash on arrival, Les Chambres du Soleil (Day 2): 24€ + tax",date:"Carry"},
     {id:"p8",task:"Cash on arrival, Auberge la Boërne (Day 9): 24€ + tax",date:"Carry"},
+  ],
+  "🍽 Meals NOT prepared — recap & what to do":[
+    {id:"m0",task:"DAY 1 · 13 Sep · DINNER, Les Contamines — Gaï Soleil is ROOM ONLY, nothing booked. 👉 RECOMMENDED: add the 25€pp dinner through the hotel via Maison Noël (32 m away) when you confirm your arrival — after a 6 hr day with a 1,291 m descent you will not want to walk into the village. Backup: La Table d'Hôtes Savoie (400 m) or Le Carnotzet (420 m). Sort before you fly",urgent:true},
+    {id:"m1",task:"DAY 2 · 14 Sep · LUNCH, to Les Chapieux — not provided. 👉 RECOMMENDED: buy it in Les Contamines before leaving (Carrefour Montagne 310 m or Proust 440 m). Refuge de la Balme is CLOSED from 14 Sep, and while Nant Borrant (~1.5 h) and the Croix du Bonhomme (~4.5 h) do hot lunches, neither may suit your timing on a 7–9 hr day. Carry food and water either way"},
+    {id:"m2",task:"DAY 4 · 16 Sep · LUNCH, rest day — La Maison de Filippo, Entrèves 12:15 for 2 is REQUESTED BUT NOT CONFIRMED. 👉 CHASE IT: +39 0165 869797. It sits between the Skyway descent and the 14:00 spa entry, so if it falls through book something on Via Roma instead",urgent:true},
+    {id:"m3",task:"DAY 5 · 17 Sep · LUNCH, to Rifugio Bonatti — not provided. 👉 RECOMMENDED: buy supplies in Courmayeur on the Day 4 REST DAY, not on the morning itself. Nothing on the balcony between Bertone and Bonatti (~2 hrs)"},
+    {id:"m4",task:"DAY 6 · 18 Sep · LUNCH, over the Grand Col Ferret — ⚠️ THE BIG GAP, still not arranged. 👉 MUST DO: order the packed lunch AT Rifugio Bonatti the night before, CASH only, and confirm whether the price is each or for two. There is nothing between Rifugio Elena and La Peule, 2–2.5 hrs over the highest col of the trek",urgent:true},
+    {id:"m5",task:"DAY 9 · 21 Sep · LUNCH, to Tré-le-Champ — not included. 👉 RECOMMENDED: buy it in Champex-Lac on DAY 7, the last proper shop before Chamonix. Trient has no shop and no ATM. Fallback: order a packed lunch at Auberge du Mont Blanc on arrival (~CHF 11–14, extra, pay for it)"},
+    {id:"m6",task:"DAY 10 · 22 Sep · CELEBRATION DINNER, Chamonix — not booked. 👉 BOOK BEFORE YOU FLY: Chamonix fills up and you arrive tired off a ~1,700 m descent. Note the Aiguille Verte apartment is self-catering with no meals, so this is your only option that night",urgent:true},
+    {id:"m7",task:"ALSO DECIDE · Day 2 breakfast at Gaï Soleil is an optional 13€pp buffet (07:30–10:00) since the room is room-only — worth it before a 7–9 hr day. And confirm the Les Chambres du Soleil breakfast TIME on arrival (Day 2 night): you want to leave 06:30 on Day 3"},
   ],
   "📦 Pre-Departure Prep":[
     {id:"d0",task:"Purchase travel insurance, high-altitude trekking + helicopter evacuation · France, Italy & Switzerland"},
@@ -631,7 +641,7 @@ const REFRESH={
   1:{lunch:"No packed lunch today: buy it in Les Houches or Chamonix before you set off. Trail stops are sparse, so carry enough.",buy:"Buy a full picnic in Les Houches before you start climbing (Spar + boulangerie); nothing to buy on the plateau.",stops:[
     {n:"La Rioule, Col de Voza",at:"~6 km / ~2.5 h (top of the first climb)",f:"Espresso + a slice of tarte, or a quick omelette (the one real stop, don't linger)",o:"Seasonal, confirm",meal:true},
     {n:"Café at Bellevue top station",at:"~7.5 km / ~3 h",f:"Coffee + snack with a Mont Blanc view",o:"Lift closes 13 Sep, café likely shut, confirm",meal:false}]},
-  2:{lunch:"Nant Borrant (early) and the Croix du Bonhomme (at the high point) do hot lunches on your date — but ⚠️ Refuge de la Balme is CLOSED from 14 Sep, so carry enough water/food for the long climb to the cols, or buy lunch in Les Contamines before leaving.",buy:"Buy trail food in Les Contamines at the start (boulangerie + small supermarket). Last proper shop until Courmayeur.",stops:[
+  2:{lunch:"Two ways to do today, your choice. EITHER buy lunch in Les Contamines before leaving (Carrefour Montagne 310 m or Proust 440 m) and eat it on the trail, OR eat at a refuge on the way: Nant Borrant early on (~1.5 h, famous tarts and omelettes) or the Croix du Bonhomme at the high point (~4.5 h, hot soup and gratin). ⚠️ Refuge de la Balme is CLOSED from 14 Sep, so either way carry enough water and food for the long climb to the cols.",buy:"Buy trail food in Les Contamines at the start (boulangerie + small supermarket). Last proper shop until Courmayeur.",stops:[
     {n:"Refuge de Nant Borrant",at:"~6.5 km / ~1.5 h",f:"Famous apple & blueberry tarts, omelettes, soup",o:"Likely open, confirm",meal:true},
     {n:"Refuge de la Balme",at:"~9 km / ~2.5 h",f:"Soup + tarte (normally the last food/water before the cols)",o:"⚠️ CLOSED on your day — 2026 season ends 13 Sep, you pass on 14 Sep. Carry enough water/food to the Croix du Bonhomme",meal:true},
     {n:"Refuge de la Croix du Bonhomme",at:"~14.5 km / ~4.5 h",f:"Hot soup + gratin at the high point, sells picnic packs",o:"Open to 20 Sep 2026 (so open on 14 Sep) — ⚠️ but a major FFCAM renovation is planned; confirm it's running before relying on it",meal:true}]},
@@ -932,12 +942,15 @@ function rStays(){
 </div>
 <div class="card cp" style="margin-top:10px;border-left:3px solid var(--amb)">
   <div class="serif" style="font-size:16px;font-weight:600;color:var(--for);margin-bottom:2px">🍽 Meals still to sort</div>
-  <div style="font-size:11px;color:var(--txL);margin-bottom:9px">The lunches that are NOT already bundled into a booking. Static list — update it by hand as each one is resolved.</div>
+  <div style="font-size:11px;color:var(--txL);margin-bottom:9px">Every lunch and dinner NOT bundled into a booking. Full recommendations for each are in the To-Do tab under "🍽 Meals NOT prepared". Static list — update by hand as each is resolved.</div>
   ${[
-    {d:"Day 2 · 14 Sep",t:"Buy lunch in Les Contamines before leaving (Carrefour Montagne or Proust)",u:false},
-    {d:"Day 5 · 17 Sep",t:"Buy lunch supplies in Courmayeur before leaving",u:false},
-    {d:"Day 6 · 18 Sep",t:"NOT YET ARRANGED — order at Rifugio Bonatti the night before, CASH only",u:true},
-    {d:"Day 9 · 21 Sep",t:"Not included — buy in Champex (Day 7) or order at Auberge du Mont Blanc on arrival",u:false}
+    {d:"Day 1 · 13 Sep",t:"DINNER not included — Gaï Soleil is room only. Add 25€pp via Maison Noël, or eat in the village",u:true},
+    {d:"Day 2 · 14 Sep",t:"Lunch: buy in Les Contamines before leaving, or eat at Nant Borrant / Croix du Bonhomme on the way",u:false},
+    {d:"Day 4 · 16 Sep",t:"Lunch: La Maison de Filippo 12:15 requested but NOT yet confirmed — chase it",u:true},
+    {d:"Day 5 · 17 Sep",t:"Lunch: buy supplies in Courmayeur, ideally on the Day 4 rest day",u:false},
+    {d:"Day 6 · 18 Sep",t:"Lunch NOT YET ARRANGED — order at Rifugio Bonatti the night before, CASH only",u:true},
+    {d:"Day 9 · 21 Sep",t:"Lunch not included — buy in Champex on Day 7, or order at Auberge du Mont Blanc on arrival",u:false},
+    {d:"Day 10 · 22 Sep",t:"CELEBRATION DINNER in Chamonix not booked — book before you fly",u:true}
   ].map(m=>`<div style="display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--bor)"><div style="min-width:82px;font-size:11.5px;font-weight:700;color:${m.u?"var(--amb)":"var(--for)"};flex-shrink:0">${m.d}</div><div style="flex:1;font-size:12px;color:var(--txM);line-height:1.5">${m.u?"⚠️ ":""}${m.t}</div></div>`).join("")}
 </div>`;}
 
