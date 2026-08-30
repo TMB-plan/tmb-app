@@ -108,6 +108,29 @@ textarea.inp{resize:vertical;min-height:70px;line-height:1.6}
 .jbtn.has{border-color:var(--forM)}
 .back-btn{background:none;border:none;color:var(--for);font-size:13px;margin-bottom:12px;padding:0}
 
+/* FLIGHTS */
+.fgrid{display:grid;grid-template-columns:1fr;gap:9px;margin-bottom:10px}
+@media(min-width:640px){.fgrid{grid-template-columns:1fr 1fr}}
+.fcard{border-radius:12px;color:#fff;box-shadow:var(--sh);overflow:hidden;display:flex;flex-direction:column}
+.fhdr{display:flex;align-items:center;gap:9px;padding:12px 13px 4px}
+.fav{width:27px;height:27px;border-radius:50%;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:700;flex-shrink:0}
+.fwho{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;line-height:1.15;color:#fff}
+.fsub{font-size:10.5px;color:rgba(255,255,255,.62);margin-top:1px}
+.fbody{padding:0 13px 11px;flex:1}
+.fgrp{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:9px;font-weight:700;letter-spacing:.09em;color:rgba(255,255,255,.52);text-transform:uppercase;margin:10px 0 4px;padding-top:9px;border-top:1px solid rgba(255,255,255,.14)}
+.fgrp .fdate{letter-spacing:.02em;color:rgba(255,255,255,.74);text-transform:none;font-size:10.5px;white-space:nowrap;font-weight:600}
+.fseg{display:flex;align-items:center;gap:9px;padding:4px 0}
+.ffn{min-width:76px;font-size:9px;font-weight:700;color:#fff;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.24);border-radius:5px;padding:4px 3px;text-align:center;flex-shrink:0;letter-spacing:.02em}
+.ffn.tr{background:rgba(175,205,255,.24);border-color:rgba(175,205,255,.45)}
+.frt{flex:1;min-width:0}
+.fcodes{font-size:12.5px;font-weight:600;color:#fff;display:flex;align-items:center;gap:5px}
+.farr{color:rgba(255,255,255,.5);font-size:10px}
+.fmeta{font-size:10px;color:rgba(255,255,255,.6);margin-top:1px;line-height:1.4}
+.ftime{font-size:12.5px;font-weight:700;color:#fff;text-align:right;white-space:nowrap;flex-shrink:0;font-variant-numeric:tabular-nums}
+.flay{font-size:10px;color:rgba(255,255,255,.55);padding:1px 0 3px 85px;line-height:1.4;font-style:italic}
+.farrive{font-size:11px;font-weight:600;color:#fff;background:rgba(255,255,255,.11);border-radius:6px;padding:5px 8px;margin-top:6px}
+.fnote{font-size:10px;color:rgba(255,255,255,.62);padding:8px 13px;border-top:1px solid rgba(255,255,255,.14);line-height:1.5}
+
 /* MISC */
 .tl-row{display:flex;gap:11px;margin-bottom:8px;align-items:flex-start}
 .tl-d{min-width:76px;font-size:11.5px;color:var(--txL);padding-top:2px}
@@ -115,9 +138,6 @@ textarea.inp{resize:vertical;min-height:70px;line-height:1.6}
 .physio-alert{background:#FFF9F0;border:1px solid var(--ambL);border-left:3px solid var(--amb);border-radius:10px;padding:13px;box-shadow:var(--shS)}
 .empty{text-align:center;color:var(--txL);font-size:13px;padding:22px 0}
 .diff{font-size:11px;font-weight:500}
-.flight-card{background:var(--for);border-radius:10px;padding:13px;margin-bottom:8px;color:#fff;box-shadow:var(--sh)}
-.flight-card .route{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500}
-.flight-card .detail{font-size:11.5px;color:rgba(255,255,255,.7);margin-top:3px;line-height:1.6}
 .budget-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--bor);font-size:12.5px}
 .budget-row:last-child{border-bottom:none}
 .b-amt{font-weight:500}
@@ -142,10 +162,6 @@ details.sec[open]>summary{border-bottom:1px solid var(--bor)}
 // ── DATA ─────────────────────────────────────────────────────────────────────
 const DEPART = new Date("2026-09-10");
 
-const FLIGHTS = {
-  out: {route:"SYD → GVA",leg1:"Thu 10 Sep · Depart SYD 20:45 · QF8413/EK413 · Emirates",conn:"Dubai layover 3h 15min · Arrive DXB 05:15",leg2:"Fri 11 Sep · Depart DXB 08:30 · QF8089/EK89 · Emirates",arr:"Arrive Geneva T1: Fri 11 Sep 13:15",note:"Check in with Emirates for both legs"},
-  ret: {route:"GVA → SYD",leg1:"Fri 25 Sep · Depart GVA 15:15 · QF8090/EK90 · Emirates",conn:"Dubai stopover 2h 35min · Arrive DXB 23:40",leg2:"Sat 26 Sep · Depart DXB 02:15 · QF8414/EK414 · Emirates",arr:"Arrive Sydney T1: Sat 26 Sep 22:05",note:""}
-};
 
 const STAGES = [
   {day:1,date:"13 Sep",from:"Les Houches",to:"Les Contamines",dist:"~11.5 km",gain:"+681 m",loss:"−1,291 m",time:"~6–6.5 hrs",alt:"2,132 m",country:"FR",diff:3,
@@ -435,6 +451,34 @@ const TODOS = {
 };
 
 
+// Flights + the train that brings VL to the start. Rendered as the two cards on the Overview.
+const TRAVEL=[
+  {who:"AW",sub:"Sydney ⇄ Geneva · Emirates",col:"var(--for)",groups:[
+    {t:"Outbound",d:"10–11 Sep",rows:[
+      {fn:"QF8413/EK413",a:"SYD",b:"DXB",m:"Thu 10 Sep · Emirates",t:"20:45"},
+      {lay:"Dubai layover 3 h 15 min · arrive DXB 05:15"},
+      {fn:"QF8089/EK89",a:"DXB",b:"GVA",m:"Fri 11 Sep · Emirates",t:"08:30"}
+    ],arr:"Arrive Geneva T1 · Fri 11 Sep 13:15"},
+    {t:"Return",d:"25–26 Sep",rows:[
+      {fn:"QF8090/EK90",a:"GVA",b:"DXB",m:"Fri 25 Sep · Emirates",t:"15:15"},
+      {lay:"Dubai stopover 2 h 35 min · arrive DXB 23:40"},
+      {fn:"QF8414/EK414",a:"DXB",b:"SYD",m:"Sat 26 Sep · Emirates",t:"02:15"}
+    ],arr:"Arrive Sydney T1 · Sat 26 Sep 22:05"}
+  ],note:"Check in with Emirates for both legs. ⚠️ Unconfirmed: AW may fly to Paris earlier for work and depart from there, which would change the 24 Sep Geneva night and this return."},
+  {who:"VL",sub:"Sydney ⇄ London · joins by train",col:"var(--forM)",groups:[
+    {t:"Outbound",d:"7 Sep",rows:[
+      {fn:"QF11",a:"SYD",b:"LAX",m:"Mon 7 Sep · Qantas",t:"17:50"},
+      {fn:"AA136",a:"LAX",b:"LHR",m:"Mon 7 Sep · American",t:"18:10"}
+    ],arr:"Then on to Lucerne before the trek"},
+    {t:"Train to the start",d:"11 Sep",rows:[
+      {fn:"SBB",k:"tr",a:"Lucerne",b:"Geneva",m:"Fri 11 Sep · Swiss rail",t:"09:00"}
+    ],arr:"Arrive Geneva 12:05 · then on to Chamonix"},
+    {t:"Return",d:"2–3 Oct",rows:[
+      {fn:"CI82",a:"LHR",b:"TPE",m:"Fri 2 Oct · China Airlines",t:"21:10"},
+      {fn:"CI51",a:"TPE",b:"SYD",m:"Sat 3 Oct · China Airlines",t:"23:30"}
+    ],arr:"Taipei stopover between the two legs"}
+  ],note:"VL flies home from London, not Geneva — she leaves Geneva after the 23 Sep night."}
+];
 const TABS=[{id:"overview",i:"⛰",l:"Overview"},{id:"stages",i:"🗺",l:"Stages"},{id:"totals",i:"📊",l:"Totals"},{id:"stays",i:"🏨",l:"Stays"},{id:"gear",i:"🎒",l:"Gear"},{id:"todos",i:"✅",l:"To-Do"},{id:"split",i:"🧾",l:"Expenses"},{id:"training",i:"🏋️",l:"Training"},{id:"journal",i:"📓",l:"Journal"}];
 const DC=["","Easy","Moderate","Moderate","Hard","Very Hard"];
 const DK=["","#3D7A5A","#A86B18","#A86B18","#9B2525","#6B0000"];
@@ -487,51 +531,33 @@ function rOverview(){
 <div class="g2" style="margin-bottom:12px">
   ${[{l:"Gear packed",d:pd,t:pt,c:"var(--for)"},{l:"To-Dos done",d:td,t:tt,c:"var(--amb)"}].map(w=>`<div class="sc"><div style="font-size:11px;color:var(--txL);margin-bottom:5px">${w.l}</div><div class="mbar"><div class="mfil" style="width:${Math.min(100,(w.d/w.t)*100)}%;background:${w.c}"></div></div><div style="font-size:12px;font-weight:500;color:${w.c}">${w.d}/${w.t}</div></div>`).join("")}
 </div>
-<div class="flight-card">
-  <div class="route">✈️ SYD → GVA, Outbound</div>
-  <div class="detail">${FLIGHTS.out.leg1}<br>${FLIGHTS.out.conn}<br>${FLIGHTS.out.leg2}<br><strong style="color:rgba(255,255,255,.9)">${FLIGHTS.out.arr}</strong><br><span style="color:rgba(255,255,255,.5)">${FLIGHTS.out.note}</span></div>
-</div>
-<div class="flight-card" style="background:var(--forM)">
-  <div class="route">✈️ GVA → SYD, Return</div>
-  <div class="detail">${FLIGHTS.ret.leg1}<br>${FLIGHTS.ret.conn}<br>${FLIGHTS.ret.leg2}<br><strong style="color:rgba(255,255,255,.9)">${FLIGHTS.ret.arr}</strong></div>
+<div class="serif" style="font-size:17px;font-weight:600;color:var(--for);margin:2px 0 3px">✈️ Getting there &amp; back</div>
+<div style="font-size:11px;color:var(--txL);margin-bottom:9px">AW flies Sydney ⇄ Geneva with Emirates. VL routes via Los Angeles and London, then joins by train from Lucerne.</div>
+<div class="fgrid">
+${TRAVEL.map(p=>`<div class="fcard" style="background:${p.col}">
+  <div class="fhdr">
+    <div class="fav">${p.who}</div>
+    <div><div class="fwho">${p.who}</div><div class="fsub">${p.sub}</div></div>
+  </div>
+  <div class="fbody">
+    ${p.groups.map(g=>`<div class="fgrp"><span>${g.t}</span><span class="fdate">${g.d}</span></div>
+    ${g.rows.map(r=>r.lay?`<div class="flay">↳ ${r.lay}</div>`:`<div class="fseg">
+      <div class="ffn${r.k?" "+r.k:""}">${r.fn}</div>
+      <div class="frt">
+        <div class="fcodes">${r.a}<span class="farr">✈</span>${r.b}</div>
+        <div class="fmeta">${r.m}</div>
+      </div>
+      <div class="ftime">${r.t}</div>
+    </div>`).join("")}
+    ${g.arr?`<div class="farrive">${g.arr}</div>`:""}`).join("")}
+  </div>
+  ${p.note?`<div class="fnote">${p.note}</div>`:""}
+</div>`).join("")}
 </div>
 <div class="card cp" style="margin-bottom:10px">
   <div class="serif" style="font-size:16px;font-weight:600;color:var(--for);margin-bottom:11px">Trip Timeline</div>
   ${[{d:"10 Sep",e:"Depart Sydney SYD 20:45",c:"#7A7268"},{d:"11 Sep",e:"Arrive Geneva 13:15 → Chamonix (Appart'Hotel Aiguille Verte)",c:"#7A7268"},{d:"12 Sep",e:"Chamonix settle-in: last-minute snacks, sort gear",c:"var(--amb)"},{d:"13–22 Sep",e:"Tour du Mont Blanc, 10 trail days",c:"var(--for)"},{d:"22 Sep",e:"Chamonix post-trek (Appart'Hotel Aiguille Verte)",c:"var(--amb)"},{d:"23–24 Sep",e:"Transfer to Geneva → Eastwest Hôtel by Malone",c:"#7A7268"},{d:"25 Sep",e:"Depart Geneva GVA 15:15",c:"#7A7268"},{d:"26 Sep",e:"Arrive Sydney SYD 22:05 🎉",c:"var(--for)"}].map(t=>`<div class="tl-row"><div class="tl-d">${t.d}</div><div class="tl-dot" style="background:${t.c}"></div><div style="font-size:13px">${t.e}</div></div>`).join("")}
 </div>
-<details class="sec" style="margin-top:10px"><summary>✈️ AW — travel to &amp; from the trek</summary><div class="secbody">
-  <div style="font-size:11px;color:var(--txL);margin-bottom:8px">AW's flights in and out of Geneva, either side of the trek.</div>
-  <div style="font-size:10px;font-weight:700;color:var(--txL);letter-spacing:.5px;margin-bottom:3px">✈️ FLIGHTS OUT · 10–11 Sep</div>
-  <div class="nbox" style="background:var(--surB)"><div style="font-size:12.5px;color:var(--txM);line-height:1.75">
-    <div>• <strong>Sydney → Geneva</strong> · dep SYD 10 Sep 20:45</div>
-    <div>• <strong>Arrive Geneva</strong> · 11 Sep 13:15</div>
-    <div style="font-size:11px;color:var(--txL);margin-top:2px">Then on to Chamonix for the pre-trek nights (Aiguille Verte, 11–12 Sep). Flight numbers not recorded yet.</div>
-  </div></div>
-  <div style="font-size:10px;font-weight:700;color:var(--txL);letter-spacing:.5px;margin:11px 0 3px">✈️ FLIGHTS BACK · 25–26 Sep</div>
-  <div class="nbox" style="background:var(--surB)"><div style="font-size:12.5px;color:var(--txM);line-height:1.75">
-    <div>• <strong>Geneva → Sydney</strong> · dep GVA 25 Sep 15:15</div>
-    <div>• <strong>Arrive Sydney</strong> · 26 Sep 22:05 🎉</div>
-    <div style="font-size:11px;color:var(--txL);margin-top:2px">⚠️ Unconfirmed: AW may fly to Paris earlier for work and depart from there, which would change the 24th night in Geneva and this return flight.</div>
-  </div></div>
-</div></details>
-<details class="sec" style="margin-top:10px"><summary>✈️ VL — travel to &amp; from the trek</summary><div class="secbody">
-  <div style="font-size:11px;color:var(--txL);margin-bottom:8px">VL's flights, and the Lucerne → Geneva train that brings her to the Chamonix start.</div>
-  <div style="font-size:10px;font-weight:700;color:var(--txL);letter-spacing:.5px;margin-bottom:3px">✈️ FLIGHTS OUT · 7 Sep</div>
-  <div class="nbox" style="background:var(--surB)"><div style="font-size:12.5px;color:var(--txM);line-height:1.75">
-    <div>• <strong>QF11</strong> · Sydney → Los Angeles · 7 Sep, dep 17:50</div>
-    <div>• <strong>AA136</strong> · Los Angeles → London Heathrow · 7 Sep, dep 18:10</div>
-  </div></div>
-  <div style="font-size:10px;font-weight:700;color:var(--txL);letter-spacing:.5px;margin:11px 0 3px">🚆 TRAIN TO THE START · 11 Sep (SBB)</div>
-  <div class="nbox" style="background:var(--surB)"><div style="font-size:12.5px;color:var(--txM);line-height:1.75">
-    <div>• <strong>Lucerne → Geneva</strong> · 11 Sep, dep 09:00 → arr 12:05</div>
-    <div style="font-size:11px;color:var(--txL);margin-top:2px">Then on to Chamonix for the pre-trek nights (Aiguille Verte, 11–12 Sep).</div>
-  </div></div>
-  <div style="font-size:10px;font-weight:700;color:var(--txL);letter-spacing:.5px;margin:11px 0 3px">✈️ FLIGHTS BACK</div>
-  <div class="nbox" style="background:var(--surB)"><div style="font-size:12.5px;color:var(--txM);line-height:1.75">
-    <div>• <strong>CI82</strong> · London Heathrow → Taipei (Taoyuan) · 2 Oct, dep 21:10</div>
-    <div>• <strong>CI51</strong> · Taipei (Taoyuan) → Sydney · 3 Oct, dep 23:30</div>
-  </div></div>
-</div></details>
 <details class="sec" style="margin-top:10px"><summary>🍫 Trail snacks &amp; resupply plan</summary><div class="secbody">
   <div style="font-size:11.5px;color:var(--txL);margin-bottom:9px">What to buy where. Bring the specialist items from home; buy the fresh and bulk snacks over there — cheaper and fresher.</div>
   <div class="nbox" style="background:var(--surB)">
