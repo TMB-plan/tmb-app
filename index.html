@@ -504,22 +504,21 @@ function rOverview(){
   <div class="serif" style="font-size:16px;font-weight:600;color:var(--for);margin-bottom:11px">Trip Timeline</div>
   ${[{d:"10 Sep",e:"Depart Sydney SYD 20:45",c:"#7A7268"},{d:"11 Sep",e:"Arrive Geneva 13:15 → Chamonix (Appart'Hotel Aiguille Verte)",c:"#7A7268"},{d:"12 Sep",e:"Chamonix settle-in: last-minute snacks, sort gear",c:"var(--amb)"},{d:"13–22 Sep",e:"Tour du Mont Blanc, 10 trail days",c:"var(--for)"},{d:"22 Sep",e:"Chamonix post-trek (Appart'Hotel Aiguille Verte)",c:"var(--amb)"},{d:"23–24 Sep",e:"Transfer to Geneva → Eastwest Hôtel by Malone",c:"#7A7268"},{d:"25 Sep",e:"Depart Geneva GVA 15:15",c:"#7A7268"},{d:"26 Sep",e:"Arrive Sydney SYD 22:05 🎉",c:"var(--for)"}].map(t=>`<div class="tl-row"><div class="tl-d">${t.d}</div><div class="tl-dot" style="background:${t.c}"></div><div style="font-size:13px">${t.e}</div></div>`).join("")}
 </div>
-<div class="physio-alert">
-  <div style="font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;color:var(--amb);margin-bottom:7px">⚕ Physio Reminders, Every Day</div>
-  <div style="font-size:12.5px;line-height:1.8;color:var(--txM)">
-    <div>• <strong>Left hip</strong>, hip flexor & glute weakness on descents. Activate each morning: clamshells, SL glute bridges, banded walks.</div>
-    <div>• <strong>Right ankle</strong>, sprain history. Brace on ALL technical descents (Days 3, 5, 6, 10 especially). Poles always.</div>
-    <div>• <strong>Daily</strong>, rest stops every 45 min, compression device each evening, electrolytes on hot / long days.</div>
-    <div>• <strong>Late Sept snow</strong>, possible above ~2,200 m. Check MeteoBlue daily before major cols.</div>
-  </div>
-</div>
-<div class="physio-alert" style="margin-top:10px">
-  <div style="font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;color:var(--amb);margin-bottom:7px">🧍 VL (companion), body notes</div>
-  <div style="font-size:12.5px;line-height:1.8;color:var(--txM)">
-    <div>• <strong>Left elbow</strong>, fracture last year. Care on the Day 10 ladders and any scrambling; ease into pole loading.</div>
-    <div>• <strong>Right ankle</strong>, can be a bit wobbly. Brace and poles on technical descents (Days 6 and 10 especially); watch footing on rocky ground.</div>
-  </div>
-</div>
+<details class="sec" style="margin-top:10px"><summary>✈️ AW — travel to &amp; from the trek</summary><div class="secbody">
+  <div style="font-size:11px;color:var(--txL);margin-bottom:8px">AW's flights in and out of Geneva, either side of the trek.</div>
+  <div style="font-size:10px;font-weight:700;color:var(--txL);letter-spacing:.5px;margin-bottom:3px">✈️ FLIGHTS OUT · 10–11 Sep</div>
+  <div class="nbox" style="background:var(--surB)"><div style="font-size:12.5px;color:var(--txM);line-height:1.75">
+    <div>• <strong>Sydney → Geneva</strong> · dep SYD 10 Sep 20:45</div>
+    <div>• <strong>Arrive Geneva</strong> · 11 Sep 13:15</div>
+    <div style="font-size:11px;color:var(--txL);margin-top:2px">Then on to Chamonix for the pre-trek nights (Aiguille Verte, 11–12 Sep). Flight numbers not recorded yet.</div>
+  </div></div>
+  <div style="font-size:10px;font-weight:700;color:var(--txL);letter-spacing:.5px;margin:11px 0 3px">✈️ FLIGHTS BACK · 25–26 Sep</div>
+  <div class="nbox" style="background:var(--surB)"><div style="font-size:12.5px;color:var(--txM);line-height:1.75">
+    <div>• <strong>Geneva → Sydney</strong> · dep GVA 25 Sep 15:15</div>
+    <div>• <strong>Arrive Sydney</strong> · 26 Sep 22:05 🎉</div>
+    <div style="font-size:11px;color:var(--txL);margin-top:2px">⚠️ Unconfirmed: AW may fly to Paris earlier for work and depart from there, which would change the 24th night in Geneva and this return flight.</div>
+  </div></div>
+</div></details>
 <details class="sec" style="margin-top:10px"><summary>✈️ VL — travel to &amp; from the trek</summary><div class="secbody">
   <div style="font-size:11px;color:var(--txL);margin-bottom:8px">VL's flights, and the Lucerne → Geneva train that brings her to the Chamonix start.</div>
   <div style="font-size:10px;font-weight:700;color:var(--txL);letter-spacing:.5px;margin-bottom:3px">✈️ FLIGHTS OUT · 7 Sep</div>
