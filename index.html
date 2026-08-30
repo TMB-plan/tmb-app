@@ -283,7 +283,7 @@ const STAYS = [
   {id:"s7",night:"20 Sep · Day 8",place:"Auberge du Mont Blanc",loc:"Trient, Switzerland",type:"Auberge",status:"confirmed",cost:"AUD 310.72 (paid; CHF not shown on confirmation)",paid:"Paid via Booking.com",payBy:"PAID",note:"Planpro 1, 1929 Trient. Booking.com, Twin Room, 2 adults, paid in full, no balance on arrival. Tel +41 77 420 08 14, sauna on site. Check-in 14:00-19:30, out by 10:00. ✅ HALF BOARD CONFIRMED (dinner + breakfast; Day 8 dinner is fondue). ⚠️ Still confirm bathroom type, cancellation terms, towels. ⚠️ Day 9 lunch NOT included, buy in Champex (Day 7) or order on arrival (~CHF 11–14). No shop/ATM in Trient."},
   {id:"s8",night:"21 Sep · Day 9",place:"Auberge la Boërne",loc:"Tré-le-Champ, France",type:"Auberge",status:"confirmed",cost:"€225 + 24€",paid:"€225",payBy:"PAID",note:"Private dorm (3p), half-board. Balance on arrival: 24€ (2× Day 10 packed lunch) + tourist tax. Arrive by 18:00, depart 09:00. ⚠️ Confirm 06:15 breakfast the night before."},
   {id:"s9",night:"22 Sep",place:"Appart'Hotel Aiguille Verte",loc:"Chamonix",type:"Hotel",status:"confirmed",cost:"€253.40",paid:"€253.40",payBy:"PAID",note:"Post-trek night. Book celebration dinner!"},
-  {id:"s10",night:"23–24 Sep",place:"Eastwest Hôtel by Malone",loc:"Geneva",type:"Hotel",status:"confirmed",cost:"AUD 895",paid:"–",payBy:"20 Sep",note:"Pre-flight. 2 nights. Cancel deadline: 21 Sep. Flight departs GVA 15:15 on 25 Sep."},
+  {id:"s10",night:"23–24 Sep",place:"Eastwest Hôtel by Malone",loc:"Geneva",type:"Hotel",status:"confirmed",cost:"AUD 895",paid:"–",payBy:"20 Sep",note:"Pre-flight. 2 nights. Cancel deadline: 21 Sep. Flight departs GVA 15:25 on 25 Sep (QF8090/EK90)."},
 ];
 
 // Structured facility detail per stay (sourced online July 2026; items marked "confirm" not verified). Keyed by stay id.
@@ -453,18 +453,18 @@ const TODOS = {
 
 // Flights + the train that brings VL to the start. Rendered as the two cards on the Overview.
 const TRAVEL=[
-  {who:"AW",sub:"Sydney ⇄ Geneva · Emirates",col:"var(--for)",groups:[
-    {t:"Outbound",d:"10–11 Sep",rows:[
-      {fn:"QF8413/EK413",a:"SYD",b:"DXB",m:"Thu 10 Sep · Emirates",t:"20:45"},
-      {lay:"Dubai layover 3 h 15 min · arrive DXB 05:15"},
-      {fn:"QF8089/EK89",a:"DXB",b:"GVA",m:"Fri 11 Sep · Emirates",t:"08:30"}
-    ],arr:"Arrive Geneva T1 · Fri 11 Sep 13:15"},
-    {t:"Return",d:"25–26 Sep",rows:[
-      {fn:"QF8090/EK90",a:"GVA",b:"DXB",m:"Fri 25 Sep · Emirates",t:"15:15"},
-      {lay:"Dubai stopover 2 h 35 min · arrive DXB 23:40"},
-      {fn:"QF8414/EK414",a:"DXB",b:"SYD",m:"Sat 26 Sep · Emirates",t:"02:15"}
+  {who:"AW",sub:"Sydney ⇄ Geneva · Emirates · ref EEKNQI",col:"var(--for)",groups:[
+    {t:"Outbound · 24 h 55 min",d:"10–11 Sep",rows:[
+      {fn:"QF8413/EK413",a:"SYD",b:"DXB",m:"Thu 10 Sep · T1 → T3 · 14 h 30 min",t:"20:45"},
+      {lay:"Arrive DXB 05:15 Fri · transfer in Dubai 3 h 10 min"},
+      {fn:"QF8089/EK89",a:"DXB",b:"GVA",m:"Fri 11 Sep · T3 → T1 · 7 h 15 min",t:"08:25"}
+    ],arr:"Arrive Geneva T1 · Fri 11 Sep 13:40"},
+    {t:"Return · 22 h 40 min",d:"25–26 Sep",rows:[
+      {fn:"QF8090/EK90",a:"GVA",b:"DXB",m:"Fri 25 Sep · T1 → T3 · 6 h 50 min",t:"15:25"},
+      {lay:"Arrive DXB 00:15 Sat · transfer in Dubai 2 h"},
+      {fn:"QF8414/EK414",a:"DXB",b:"SYD",m:"Sat 26 Sep · T3 → T1 · 13 h 50 min",t:"02:15"}
     ],arr:"Arrive Sydney T1 · Sat 26 Sep 22:05"}
-  ],note:"Check in with Emirates for both legs. ⚠️ Unconfirmed: AW may fly to Paris earlier for work and depart from there, which would change the 24 Sep Geneva night and this return."},
+  ],note:"Booking ref EEKNQI. Check in with Emirates for both legs — all four are Emirates-operated. ⚠️ Unconfirmed: AW may fly to Paris earlier for work and depart from there, which would change the 24 Sep Geneva night and this return."},
   {who:"VL",sub:"Sydney ⇄ London · joins by train",col:"var(--forM)",groups:[
     {t:"Outbound",d:"7 Sep",rows:[
       {fn:"QF11",a:"SYD",b:"LAX",m:"Mon 7 Sep · Qantas",t:"17:50"},
@@ -556,7 +556,7 @@ ${TRAVEL.map(p=>`<div class="fcard" style="background:${p.col}">
 </div>
 <div class="card cp" style="margin-bottom:10px">
   <div class="serif" style="font-size:16px;font-weight:600;color:var(--for);margin-bottom:11px">Trip Timeline</div>
-  ${[{d:"10 Sep",e:"Depart Sydney SYD 20:45",c:"#7A7268"},{d:"11 Sep",e:"Arrive Geneva 13:15 → Chamonix (Appart'Hotel Aiguille Verte)",c:"#7A7268"},{d:"12 Sep",e:"Chamonix settle-in: last-minute snacks, sort gear",c:"var(--amb)"},{d:"13–22 Sep",e:"Tour du Mont Blanc, 10 trail days",c:"var(--for)"},{d:"22 Sep",e:"Chamonix post-trek (Appart'Hotel Aiguille Verte)",c:"var(--amb)"},{d:"23–24 Sep",e:"Transfer to Geneva → Eastwest Hôtel by Malone",c:"#7A7268"},{d:"25 Sep",e:"Depart Geneva GVA 15:15",c:"#7A7268"},{d:"26 Sep",e:"Arrive Sydney SYD 22:05 🎉",c:"var(--for)"}].map(t=>`<div class="tl-row"><div class="tl-d">${t.d}</div><div class="tl-dot" style="background:${t.c}"></div><div style="font-size:13px">${t.e}</div></div>`).join("")}
+  ${[{d:"10 Sep",e:"Depart Sydney SYD 20:45",c:"#7A7268"},{d:"11 Sep",e:"Arrive Geneva 13:40 → Chamonix (Appart'Hotel Aiguille Verte)",c:"#7A7268"},{d:"12 Sep",e:"Chamonix settle-in: last-minute snacks, sort gear",c:"var(--amb)"},{d:"13–22 Sep",e:"Tour du Mont Blanc, 10 trail days",c:"var(--for)"},{d:"22 Sep",e:"Chamonix post-trek (Appart'Hotel Aiguille Verte)",c:"var(--amb)"},{d:"23–24 Sep",e:"Transfer to Geneva → Eastwest Hôtel by Malone",c:"#7A7268"},{d:"25 Sep",e:"Depart Geneva GVA 15:25",c:"#7A7268"},{d:"26 Sep",e:"Arrive Sydney SYD 22:05 🎉",c:"var(--for)"}].map(t=>`<div class="tl-row"><div class="tl-d">${t.d}</div><div class="tl-dot" style="background:${t.c}"></div><div style="font-size:13px">${t.e}</div></div>`).join("")}
 </div>
 <details class="sec" style="margin-top:10px"><summary>🍫 Trail snacks &amp; resupply plan</summary><div class="secbody">
   <div style="font-size:11.5px;color:var(--txL);margin-bottom:9px">What to buy where. Bring the specialist items from home; buy the fresh and bulk snacks over there — cheaper and fresher.</div>
