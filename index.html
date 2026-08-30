@@ -314,7 +314,7 @@ const PAYINFO={
   s8:"Room + half-board prepaid (€225). On arrival: €24 (2× Day 10 lunch) + tourist tax.",
   s9:"Fully prepaid (€253.40). €500 card pre-authorisation on arrival — refunded only if the apartment is left clean with sheets and towels piled in the living room.",
   s10:"Not yet paid. Pay AUD 895 online by 20 Sep. Buffet breakfast ~CHF 29pp if taken.",
-  s11:"Already paid and non-refundable. Refund request denied by montourdumontblanc.com (order 4289941). Counted as a shared cost, split 50/50."
+  s11:"Settled. €251 change fee charged, €187.49 REFUNDED on 24 Jun 2026 (AUD 306.86 back, from Association TMB Passy). Net loss €63.51, counted as a shared cost, split 50/50 = €31.76 each."
 };
 
 // Email + where each stay was booked. Keyed by stay id.
@@ -1102,7 +1102,7 @@ function rSplit(){
     {id:"s8",name:"Auberge la Boërne · Tré-le-Champ",night:"21 Sep · Day 9",cur:"EUR",room:225,paidRoom:225,incl:"Half-board (dinner + breakfast)",extraCur:"EUR",extra:24},
     {id:"s9",name:"Aiguille Verte · Chamonix",night:"22 Sep · Day 10 · post-trek",cur:"EUR",room:253.40,paidRoom:253.40,incl:"Apartment, room only",note:"€500 card deposit on arrival (refunded after)."},
     {id:"s10",name:"Eastwest Hôtel by Malone · Geneva",night:"23–24 Sep · pre-flight (2 nights)",cur:"AUD",room:895,paidRoom:0,when:"Pay online by 20 Sep",incl:"Double room, 4-star (breakfast ~CHF 29 extra)",cShare:223.75,note:"VL stays the night of the 23rd and leaves on the 24th, so she shares ONE night only: her half ≈ AUD 224, not half the 2-night total. ⚠️ Unconfirmed: AW may fly to Paris earlier for work and depart from there, which would change the 24th night and the return flight."},
-    {id:"s11",name:"montourdumontblanc · change fees",night:"Order 4289941 · non-refundable",cur:"EUR",room:251,paidRoom:251,when:"Already paid, refund denied",incl:"Non-refundable change fee, refund request denied"}
+    {id:"s11",name:"montourdumontblanc · change fees",night:"Order 4289941 · partly refunded",cur:"EUR",room:63.51,paidRoom:63.51,when:"Settled — €187.49 refunded 24 Jun 2026",incl:"Change fee €251, of which €187.49 was REFUNDED on 24 Jun 2026 (AUD 306.86, Association TMB Passy). Only €63.51 was retained"}
   ];
   const CASH=[
     {cur:"EUR",amt:"~€215",fr:"Bonatti (Day 5), CASH ONLY: €188.90 room + Day 6 lunch + slippers €3 each + liner €3 each. Plus €1/€2 coins for the showers"},
@@ -1164,7 +1164,7 @@ function rSplit(){
     </div>`;
   })()}
   <div style="font-size:13px;color:var(--txM);line-height:1.6;margin-bottom:12px">Shared with VL: accommodation plus the trail meals, lunches and extras bundled into each bill. Split is 50/50 except Geneva, where VL shares only the 23rd night (she leaves the 24th). Each place shows its own currency; the summary converts to AUD at approx rates (€1 = A$${RATE.EUR}, 1 CHF = A$${RATE.CHF}). Settle up on <strong>Beem</strong>.</div>
-  <div class="warn-box" style="margin-bottom:10px"><div class="w"><strong>❌ Non-refundable: €251 change fees</strong> kept by montourdumontblanc.com (order 4289941). The refund request was DENIED, so this money is gone and is now counted below as a shared cost, split 50/50 (½ = €125.50 each).</div></div>
+  <div class="warn-box" style="margin-bottom:10px"><div class="w"><strong>✅ Change fees largely refunded</strong> — montourdumontblanc.com (order 4289941) charged €251, then REFUNDED €187.49 on 24 Jun 2026 (AUD 306.86 back from Association TMB Passy). Only €63.51 was retained; that is counted below as a shared cost, split 50/50 (½ = €31.76 each).</div></div>
   <div class="card cp" style="margin-bottom:10px">
     <div class="serif" style="font-size:15px;font-weight:600;color:var(--for);margin-bottom:6px">💶 Cash to carry</div>
     ${(()=>{const sum=cur=>CASH.filter(r=>r.cur===cur).reduce((a,r)=>a+(parseFloat(r.amt.replace(/[^0-9.]/g,""))||0),0);const eur=sum("EUR"),chf=sum("CHF");return`<div style="display:flex;gap:9px">
