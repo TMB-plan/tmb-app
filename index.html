@@ -948,12 +948,21 @@ function rStays(){
 // ── GEAR ─────────────────────────────────────────────────────────────────────
 function rGear(){
   const pd=gDone(),pt=gTotal();
-  const toBuy=Object.entries(GEAR).map(([cat,items])=>[cat,items.filter(i=>!i.owned)]).filter(([,items])=>items.length);
-  const buyCount=toBuy.reduce((n,[,items])=>n+items.length,0);
+  const CHAMONIX=[
+    {t:"Another merino t-shirt",d:"You have 1 merino tee; a 2nd lets one dry while you wear the other"},
+    {t:"Hiking shorts",d:"For the hot valley sections"},
+    {t:"Another pair of merino underwear",d:"Icebreaker Siren — you have 4, aiming for 6–8"},
+    {t:"A beanie",d:"Maybe — big heat loss from the head on cold cols and at night"},
+    {t:"Feminine wipes",d:"For the days with no shower"},
+    {t:"Tissue paper (small)",d:"Trail toilets and refuges run out; add a small ziplock for used paper"},
+    {t:"Sunscreen SPF 50+",d:"Small tube; altitude sun burns fast even through cloud"},
+    {t:"Trail mix",d:"Build your own: nuts, seeds, dark chocolate, light raisins. ⚠️ Skip pre-made mixes — cashews and dried apricot are your fructan offenders"},
+    {t:"Bars",d:"Enough for every day; refuges can have reduced hours late Sept"}
+  ];
   const shopping=`<div class="card cp" style="margin-top:6px;margin-bottom:10px;border-color:var(--ambL)">
-    <div class="serif" style="font-size:16px;font-weight:600;color:var(--amb);margin-bottom:2px">🛒 Shopping list, still to buy &amp; research (${buyCount})</div>
-    <div style="font-size:11px;color:var(--txL);margin-bottom:4px">Quick view of what's not owned yet. Brands and the why are in the categories above. VL: check this against your own kit.</div>
-    ${toBuy.map(([cat,items])=>`<div style="padding:5px 0;border-top:1px solid var(--bor)"><div style="font-size:10px;font-weight:600;color:var(--txL);text-transform:uppercase;letter-spacing:.5px;margin-bottom:1px">${cat}</div><div style="font-size:12px;color:var(--txM);line-height:1.5">${items.map(i=>esc(i.item)).join(" · ")}</div></div>`).join("")}
+    <div class="serif" style="font-size:16px;font-weight:600;color:var(--amb);margin-bottom:2px">🛒 To do in Chamonix (11–12 Sep)</div>
+    <div style="font-size:11px;color:var(--txL);line-height:1.55;margin-bottom:8px">Buy before the trek starts on 13 Sep — the settle-in day on the 12th is the window. Outdoor kit from the shops on Rue du Docteur Paccard (Snell Sports, Ravanel &amp; Co); wipes, tissues and sunscreen from a pharmacy; snacks from Super U.</div>
+    ${CHAMONIX.map(c=>`<div style="display:flex;gap:9px;padding:6px 0;border-top:1px solid var(--bor)"><div style="color:var(--amb);font-weight:700;flex-shrink:0">•</div><div style="flex:1"><div style="font-size:12.5px;font-weight:500">${c.t}</div><div style="font-size:11px;color:var(--txM);margin-top:1px;line-height:1.45">${c.d}</div></div></div>`).join("")}
   </div>`;
   return`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
   <div class="ptitle" style="margin-bottom:0">Gear Checklist</div>
