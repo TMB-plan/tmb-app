@@ -314,7 +314,7 @@ const PAYINFO={
   s8:"Room + half-board prepaid (€225). On arrival: €24 (2× Day 10 lunch) + tourist tax.",
   s9:"Fully prepaid (€253.40). €500 card pre-authorisation on arrival — refunded only if the apartment is left clean with sheets and towels piled in the living room.",
   s10:"Not yet paid. Pay AUD 862.78 online by 20 Sep. Buffet breakfast ~CHF 29pp if taken.",
-  s11:"Settled. €251 change fee charged, €187.49 REFUNDED on 24 Jun 2026 (AUD 306.86 back, from Association TMB Passy). Net loss €63.51, counted as a shared cost, split 50/50 = €31.76 each."
+  s11:"Booking fee €62.17 on the live order (frais de dossier), paid in full. Separately, €262.28 of fees was kept across three cancellations — see the Expenses tab. All fees are shared costs, split 50/50.",
 };
 
 // Email + where each stay was booked. Keyed by stay id.
@@ -1112,8 +1112,10 @@ function rSplit(){
     {id:"s9",name:"Aiguille Verte · Chamonix",night:"22 Sep · Day 10 · post-trek",cur:"EUR",room:253.40,paidRoom:253.40,incl:"Apartment, room only",note:"€500 card deposit on arrival (refunded after)."},
     {id:"s10",name:"Eastwest Hôtel by Malone · Geneva",night:"23–24 Sep · pre-flight (2 nights)",cur:"AUD",room:862.78,paidRoom:0,when:"Pay online by 20 Sep",incl:"Double room, 4-star (breakfast ~CHF 29 extra)",cShare:215.70,note:"VL stays the night of the 23rd and leaves on the 24th, so she shares ONE night only: her half ≈ AUD 216, not half the 2-night total."},
     {id:"a1",name:"QC Terme spa · Pré-Saint-Didier",night:"16 Sep · Day 4 rest day",cur:"EUR",room:324,paidRoom:0,when:"Pay at check-in, 14:00",incl:"Spa entry + 50-min tailor-made massage each, €162pp, VAT incl. Booked, res. PSD2026935040056495 (card was a guarantee only)"},
-    {id:"s11",name:"montourdumontblanc · booking fee",night:"Order 4289941 · 1× frais de dossier",cur:"EUR",room:62.17,paidRoom:62.17,when:"Paid in full with the order",incl:"The agency fee on the live package (the 5 nights still booked through montourdumontblanc). A shared trip cost like any other — splits 50/50."},
-    {id:"s12",name:"montourdumontblanc · fees on cancelled orders",night:"Orders 4183299 + 4243807 + the Trient leg",cur:"EUR",room:245.64,paidRoom:245.64,when:"Non-refundable — kept when the bookings were cancelled",incl:"Cancelled deliberately so the nights could be rebooked better and cheaper on Booking.com. Only the fees were kept: €131.52 on order 4183299 (€509.15 refunded) + €67.25 on order 4243807 (€181.28 refunded) + ~€46.87 on the Trient leg inside order 4289941 (€187.49 refunded). The rebookings are the shared rooms, so the fees are a shared cost too — split 50/50."}
+    {id:"s11",name:"montourdumontblanc · booking fee",night:"Order 4289941 · 1× frais de dossier",cur:"EUR",room:62.17,paidRoom:62.17,fee:true,when:"Paid in full with the order",incl:"The agency fee on the live package — the 5 nights still booked through montourdumontblanc"},
+    {id:"s12",name:"Order 4183299 cancelled · fee kept",night:"Partial refund — €509.15 came back",cur:"EUR",room:131.52,paidRoom:131.52,fee:true,when:"Non-refundable",incl:"Frais de dossier, assurance et réservation retained when the order was cancelled so the nights could be rebooked on Booking.com"},
+    {id:"s13",name:"Order 4243807 cancelled · fee kept",night:"Partial refund — €181.28 came back",cur:"EUR",room:67.25,paidRoom:67.25,fee:true,when:"Non-refundable",incl:"Same retained fees on the second cancelled order"},
+    {id:"s14",name:"Trient leg cancelled · fee kept",night:"Partial refund — €187.49 came back 24 Jun 2026",cur:"EUR",room:63.51,paidRoom:63.51,fee:true,when:"Non-refundable",incl:"€251 charged by Association TMB Passy, €187.49 refunded (AUD 306.86 back). Trient was rebooked on Booking.com as Auberge du Mont Blanc, AUD 303.52"},
   ];
   const CASH=[
     {cur:"EUR",amt:"~€215",fr:"Bonatti (Day 5), CASH ONLY: €188.90 room + Day 6 lunch + slippers €3 each + liner €3 each. Plus €1/€2 coins for the showers"},
@@ -1143,16 +1145,27 @@ function rSplit(){
   return`<div class="ptitle">Expenses</div>
   <div class="card cp" style="margin-bottom:12px;border-left:3px solid var(--ok)">
     <div class="serif" style="font-size:17px;font-weight:600;color:var(--for);margin-bottom:2px">1 · What AW has paid so far</div>
-    <div style="font-size:11px;color:var(--txL);margin-bottom:8px">Every payment already made, including the montourdumontblanc booking and cancellation fees. These are shared costs that AW fronted — VL repays her half on Beem.</div>
+    <div style="font-size:11px;color:var(--txL);margin-bottom:8px">Every payment already made. <span style="color:var(--it);font-weight:600">Rows in red are fees</span> — money paid that bought no room, because bookings were cancelled and rebooked elsewhere. They are still shared costs that AW fronted, so VL repays her half on Beem like everything else.</div>
     ${ITEMS.filter(it=>it.paidRoom>0).map(it=>`<div style="display:flex;gap:8px;align-items:baseline;padding:6px 0;border-top:1px solid var(--bor)">
-      <div style="flex:1;min-width:0"><div style="font-size:12.5px;font-weight:500">${esc(it.name)}</div><div style="font-size:10px;color:var(--txL)">${esc(it.night)}</div></div>
+      <div style="flex:1;min-width:0"><div style="font-size:12.5px;font-weight:500${it.fee?";color:var(--it)":""}">${it.fee?"⚠️ ":""}${esc(it.name)}</div><div style="font-size:10px;color:${it.fee?"var(--it);opacity:.75":"var(--txL)"}">${esc(it.night)}</div></div>
       <div style="font-size:11px;color:var(--txL);white-space:nowrap">${it.cur==="AUD"?"":fmt(it.cur,it.paidRoom)}</div>
-      <div class="b-amt" style="color:var(--ok);white-space:nowrap">${aud(it.paidRoom*RATE[it.cur])}</div>
+      <div class="b-amt" style="color:${it.fee?"var(--it)":"var(--ok)"};white-space:nowrap">${aud(it.paidRoom*RATE[it.cur])}</div>
     </div>`).join("")}
-    <div style="display:flex;gap:8px;align-items:baseline;padding:9px 0 0;border-top:2px solid var(--bor);margin-top:4px">
+    ${(()=>{const f=ITEMS.filter(it=>it.paidRoom>0&&it.fee);const fA=f.reduce((s,it)=>s+it.paidRoom*RATE[it.cur],0);const fE=f.reduce((s,it)=>s+it.paidRoom,0);
+      return`<div style="display:flex;gap:8px;align-items:baseline;padding:8px 0 0;border-top:1px solid var(--bor);margin-top:4px">
+      <div style="flex:1;font-size:12px;color:var(--it);font-weight:600">of which fees (${f.length} lines)</div>
+      <div style="font-size:11px;color:var(--it);white-space:nowrap">${fmt("EUR",fE)}</div>
+      <div class="b-amt" style="color:var(--it);font-weight:700;white-space:nowrap">${aud(fA)}</div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:baseline;padding:4px 0 0">
+      <div style="flex:1;font-size:12px;color:var(--txM)">rooms and the spa</div>
+      <div class="b-amt" style="color:var(--txM);white-space:nowrap">${aud(gP-fA)}</div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:baseline;padding:9px 0 0;border-top:2px solid var(--bor);margin-top:6px">
       <div style="flex:1;font-size:13px;font-weight:700">TOTAL PAID</div>
       <div class="b-amt" style="font-size:15px;font-weight:700;color:var(--ok)">${aud(gP)}</div>
     </div>
+    <div style="font-size:10.5px;color:var(--txM);margin-top:8px;line-height:1.5">The ${aud(fA)} of fees is ${(fA/gP*100).toFixed(1)}% of everything paid so far — ${aud(fA/2)} each. Every one of them came from cancelling a montourdumontblanc booking to rebook the same night better or cheaper on Booking.com, so the fee and the saving belong together.</div>`;})()}
   </div>
   <div class="card cp" style="margin-bottom:12px;border-left:3px solid var(--amb)">
     <div class="serif" style="font-size:17px;font-weight:600;color:var(--for);margin-bottom:2px">2 · Still to pay</div>
@@ -1196,7 +1209,7 @@ function rSplit(){
   </div>
   <div class="card cp" style="margin-bottom:12px;border-left:3px solid var(--for)">
     <div class="serif" style="font-size:17px;font-weight:600;color:var(--for);margin-bottom:2px">4 · Settling up · VL ⇄ AW</div>
-    <div style="font-size:11px;color:var(--txL);margin-bottom:8px">VL only owes her share of what has actually been <strong>paid</strong> so far. The rest is not owed by anyone yet — it gets settled as each bill is paid.</div>
+    <div style="font-size:11px;color:var(--txL);margin-bottom:8px">Everything paid so far is split <strong>exactly 50/50</strong>. Geneva is the one uneven item, and it is <strong>not paid yet</strong>, so it plays no part here — it only appears further down under what is still to come. The rest is not owed by anyone yet; it gets settled as each bill is paid.</div>
     ${(()=>{
       let paidShareVL=0,dueShareVL=0;
       ITEMS.forEach(it=>{const ta=it.room*RATE[it.cur]+(it.extra?it.extra*RATE[it.extraCur]:0);const frac=(it.cShare!=null&&ta>0)?it.cShare/ta:0.5;const p=it.paidRoom*RATE[it.cur];paidShareVL+=p*frac;dueShareVL+=(ta-p)*frac;});
@@ -1206,7 +1219,7 @@ function rSplit(){
         :`<div class="budget-row" style="border-bottom:none"><div style="font-size:13px;font-weight:700">Square ✓</div><div class="b-amt" style="font-weight:700;color:var(--ok)">AUD 0.00</div></div>`;
       const note=bal<-0.5?`VL has paid ${aud(VLPAID)} against ${aud(paidShareVL)} owed so far, so she is <strong>${aud(-bal)} ahead</strong>. Carry it forward against her share of the bills still to come rather than paying her back.`:`VL owes ${aud(bal)} on what has been paid so far.`;
       return`<div style="font-size:10px;font-weight:700;color:var(--txL);letter-spacing:.5px;margin-bottom:2px">ON WHAT HAS BEEN PAID</div>
-    <div class="budget-row"><div style="font-size:12.5px">VL's share of the ${aud(gP)} already paid</div><div class="b-amt">${aud(paidShareVL)}</div></div>
+    <div class="budget-row"><div style="font-size:12.5px">Half of the ${aud(gP)} paid so far<div style="font-size:10px;color:var(--txL)">Straight 50/50 — no unequal item has been paid</div></div><div class="b-amt">${aud(paidShareVL)}</div></div>
     <div class="budget-row"><div style="font-size:12.5px">VL has paid (Beem)</div><div class="b-amt" style="color:var(--ok)">− ${aud(VLPAID)}</div></div>
     ${settled}
     <div style="font-size:10.5px;color:var(--txM);margin-top:8px;line-height:1.5">${note}</div>
@@ -1234,19 +1247,24 @@ function rSplit(){
       {n:"Auberge du Mont Blanc · 20–21 Sep",v:"AUD 303.52 — moved off the package"},
       {n:"Eastwest Hôtel by Malone · 23–25 Sep",v:"AUD 862.78"}
     ].map(x=>`<div style="display:flex;gap:8px;align-items:baseline;padding:5px 0;border-top:1px solid var(--bor)"><div style="flex:1;font-size:12px">${x.n}</div><div style="font-size:11px;color:var(--txM);text-align:right;white-space:nowrap">${x.v}</div></div>`).join("")}
-    <div style="font-size:10px;font-weight:700;color:var(--txL);letter-spacing:.5px;margin:13px 0 2px">THE CANCELLATIONS, AND WHAT THEY COST</div>
+    <div style="font-size:10px;font-weight:700;color:var(--txL);letter-spacing:.5px;margin:13px 0 2px">EVERY FEE PAID TO MONTOURDUMONTBLANC</div>
     ${[
       {n:"Order 4183299 — cancelled",v:"€509.15 refunded · €131.52 fee kept"},
       {n:"Order 4243807 — cancelled",v:"€181.28 refunded · €67.25 fee kept"},
-      {n:"Trient leg inside order 4289941 — cancelled",v:"€187.49 refunded · ~€46.87 fee kept"}
+      {n:"Trient leg inside order 4289941 — cancelled",v:"€187.49 refunded · €63.51 fee kept"},
+      {n:"Frais de dossier on the live order",v:"€62.17 · nothing to refund"}
     ].map(x=>`<div style="display:flex;gap:8px;align-items:baseline;padding:5px 0;border-top:1px solid var(--bor)"><div style="flex:1;font-size:12px">${x.n}</div><div style="font-size:11px;color:var(--txM);text-align:right;white-space:nowrap">${x.v}</div></div>`).join("")}
-    <div style="display:flex;gap:8px;align-items:baseline;padding:8px 0 0;border-top:2px solid var(--bor);margin-top:4px"><div style="flex:1;font-size:12.5px;font-weight:700">Fees kept, total</div><div class="b-amt" style="font-weight:700">€245.64 · ${aud(245.64*RATE.EUR)}</div></div>
+    <div style="display:flex;gap:8px;align-items:baseline;padding:8px 0 0;border-top:2px solid var(--bor);margin-top:4px"><div style="flex:1;font-size:12.5px;font-weight:700">Fees kept, total (all four)</div><div class="b-amt" style="font-weight:700">€324.45 · ${aud(324.45*RATE.EUR)}</div></div>
     <div style="font-size:10.5px;color:var(--txM);margin-top:8px;line-height:1.5">That is the price of the reshuffle, and it bought cheaper or better rooms on the nights it moved — so it sits in the shared pot and splits 50/50, the same as the rooms it paid for. It is already inside card 1's total, so no separate settling is needed.</div>
   </div>
   <div class="card cp" style="margin-bottom:12px;border-left:3px solid var(--amb)">
     <div class="serif" style="font-size:16px;font-weight:600;color:var(--amb);margin-bottom:2px">⚠️ Costs not yet in these totals</div>
     <div style="font-size:11px;color:var(--txL);line-height:1.55;margin-bottom:8px">Real money that will be spent but has no confirmed price yet, so it is deliberately excluded above rather than guessed.</div>
     ${[
+      {t:"Card foreign-transaction fees — not checked",d:"Every montourdumontblanc charge was in EUR and the two Swiss balances will be in CHF. If the card charges an FX or international fee (commonly ~3%), that is real money on top of everything in card 1 and it is NOT counted anywhere here. ⚠️ Check the card statement against the EUR amounts — this is the one fee category still unverified."},
+      {t:"Chalet La Grange · +3% if you pay by card",d:"The CHF 136.20 balance is cash-only in practice: cards carry a 3% surcharge (≈CHF 4.09). Bring the cash and it costs nothing."},
+      {t:"Dietary surcharge · €10pp",d:"Maya-Joie and La Grange both charge 10€ if dietary needs are not notified in advance. Avoidable — notify ahead."},
+      {t:"€500 pre-authorisations · Aiguille Verte, both stays",d:"Not a fee unless the apartment is left dirty, when cleaning is charged against it. Strip beds, pile sheets and towels, leave the mattress pads."},
       {t:"Skyway Monte Bianco — Day 4",d:"~€59pp return, about €118 for two (≈A$97pp). Reservation is free but weather-dependent, so not booked and not counted."},
       {t:"Courmayeur restaurants",d:"Pierre Alexis 1877 (15 Sep), Cadran Solaire (16 Sep) and La Maison de Filippo (16 Sep) are all booked but none are priced."},
       {t:"Day 1 dinner, Les Contamines",d:"La Table d'Hôtes Savoie, or 25€pp through the hotel via Maison Noël."},
@@ -1272,7 +1290,7 @@ function rSplit(){
     </div>`;
   })()}
   <div style="font-size:13px;color:var(--txM);line-height:1.6;margin-bottom:12px">Shared with VL: accommodation plus the trail meals, lunches and extras bundled into each bill. Split is 50/50 except Geneva, where VL shares only the 23rd night (she leaves the 24th). Each place shows its own currency; the summary converts to AUD at approx rates (€1 = A$${RATE.EUR}, 1 CHF = A$${RATE.CHF}). Settle up on <strong>Beem</strong>.</div>
-  <div class="warn-box" style="margin-bottom:10px"><div class="w"><strong>✅ Change fees largely refunded</strong> — montourdumontblanc.com (order 4289941) charged €251, then REFUNDED €187.49 on 24 Jun 2026 (AUD 306.86 back from Association TMB Passy). Only €63.51 was retained; that is counted below as a shared cost, split 50/50 (½ = €31.76 each).</div></div>
+  <div class="warn-box" style="margin-bottom:10px"><div class="w"><strong>💸 €324.45 has gone on fees</strong> — AUD ${aud(324.45*RATE.EUR).replace("AUD ","")} in total, ${aud(324.45*RATE.EUR/2)} each. That is the €62.17 frais de dossier on the live montourdumontblanc order, plus €262.28 retained across three cancellations (orders 4183299 and 4243807, and the Trient leg). Each cancellation refunded most of the money — €509.15, €181.28 and €187.49 came back — but the fee portion never does. Every one of those nights was rebooked on Booking.com, so the fee bought the better booking. It is shown in red in card 1 of the Expenses tab.</div></div>
   <div class="card cp" style="margin-bottom:10px">
     <div class="serif" style="font-size:15px;font-weight:600;color:var(--for);margin-bottom:6px">💶 Cash to carry</div>
     ${(()=>{const sum=cur=>CASH.filter(r=>r.cur===cur).reduce((a,r)=>a+(parseFloat(r.amt.replace(/[^0-9.]/g,""))||0),0);const eur=sum("EUR"),chf=sum("CHF");return`<div style="display:flex;gap:9px">
