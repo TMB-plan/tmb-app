@@ -1139,21 +1139,49 @@ function rSplit(){
     </div>`;}).join("");
   const cashRows=CASH.map(r=>`<tr><td style="padding:5px 7px;border-bottom:1px solid var(--bor);font-weight:600;white-space:nowrap">${r.cur}</td><td style="padding:5px 7px;border-bottom:1px solid var(--bor);white-space:nowrap;font-weight:500">${esc(r.amt)}</td><td style="padding:5px 7px;border-bottom:1px solid var(--bor);color:var(--txM)">${esc(r.fr)}</td></tr>`).join("");
   return`<div class="ptitle">Expenses</div>
+  <div class="card cp" style="margin-bottom:12px;border-left:3px solid var(--ok)">
+    <div class="serif" style="font-size:17px;font-weight:600;color:var(--for);margin-bottom:2px">1 · What AW has paid so far</div>
+    <div style="font-size:11px;color:var(--txL);margin-bottom:8px">Every payment already made, including the montourdumontblanc change fee. These are shared costs that AW fronted — VL repays her half on Beem.</div>
+    ${ITEMS.filter(it=>it.paidRoom>0).map(it=>`<div style="display:flex;gap:8px;align-items:baseline;padding:6px 0;border-top:1px solid var(--bor)">
+      <div style="flex:1;min-width:0"><div style="font-size:12.5px;font-weight:500">${esc(it.name)}</div><div style="font-size:10px;color:var(--txL)">${esc(it.night)}</div></div>
+      <div style="font-size:11px;color:var(--txL);white-space:nowrap">${it.cur==="AUD"?"":fmt(it.cur,it.paidRoom)}</div>
+      <div class="b-amt" style="color:var(--ok);white-space:nowrap">${aud(it.paidRoom*RATE[it.cur])}</div>
+    </div>`).join("")}
+    <div style="display:flex;gap:8px;align-items:baseline;padding:9px 0 0;border-top:2px solid var(--bor);margin-top:4px">
+      <div style="flex:1;font-size:13px;font-weight:700">TOTAL PAID</div>
+      <div class="b-amt" style="font-size:15px;font-weight:700;color:var(--ok)">${aud(gP)}</div>
+    </div>
+  </div>
+  <div class="card cp" style="margin-bottom:12px;border-left:3px solid var(--amb)">
+    <div class="serif" style="font-size:17px;font-weight:600;color:var(--for);margin-bottom:2px">2 · Still to pay</div>
+    <div style="font-size:11px;color:var(--txL);margin-bottom:8px">What is left, and when. Whoever hands the money over, it counts toward that person's half.</div>
+    ${(()=>{const rows=[];ITEMS.forEach(it=>{const rd=it.room-it.paidRoom;if(rd>0.005)rows.push({n:it.name,d:it.when||"",c:it.cur==="AUD"?"":fmt(it.cur,rd),a:rd*RATE[it.cur]});if(it.extra)rows.push({n:it.name+" — on arrival",d:"meals, picnics + tourist tax",c:it.extraCur==="AUD"?"":fmt(it.extraCur,it.extra),a:it.extra*RATE[it.extraCur]});});
+      return rows.map(r=>`<div style="display:flex;gap:8px;align-items:baseline;padding:6px 0;border-top:1px solid var(--bor)">
+      <div style="flex:1;min-width:0"><div style="font-size:12.5px;font-weight:500">${esc(r.n)}</div><div style="font-size:10px;color:var(--txL)">${esc(r.d)}</div></div>
+      <div style="font-size:11px;color:var(--txL);white-space:nowrap">${r.c}</div>
+      <div class="b-amt" style="color:var(--amb);white-space:nowrap">${aud(r.a)}</div>
+    </div>`).join("");})()}
+    <div style="display:flex;gap:8px;align-items:baseline;padding:9px 0 0;border-top:2px solid var(--bor);margin-top:4px">
+      <div style="flex:1;font-size:13px;font-weight:700">TOTAL STILL TO PAY</div>
+      <div class="b-amt" style="font-size:15px;font-weight:700;color:var(--amb)">${aud(gT-gP)}</div>
+    </div>
+  </div>
   <div class="card cp" style="margin-bottom:12px">
-    <div class="serif" style="font-size:17px;font-weight:600;color:var(--for);margin-bottom:2px">Summary (AUD)</div>
-    <div style="font-size:11px;color:var(--txL);margin-bottom:9px">Shared accommodation, split 50/50. The two halves differ ONLY because VL shares one Geneva night instead of two — that single night is the whole difference. Settle up on Beem.</div>
-    <div style="font-size:10px;font-weight:700;color:var(--txL);letter-spacing:.5px;margin-bottom:2px">SHARED TRIP COST</div>
-    <div class="budget-row"><div style="font-size:13px">Total (both of you)</div><div class="b-amt" style="font-size:15px">${aud(gT)}</div></div>
+    <div class="serif" style="font-size:17px;font-weight:600;color:var(--for);margin-bottom:2px">3 · How it splits</div>
+    <div style="font-size:11px;color:var(--txL);margin-bottom:8px">Paid + still to pay = the whole trip. Split 50/50, except Geneva: VL stays only the night of the 23rd, so she pays one night (AUD 223.75) instead of half of two. That single night is the entire reason the halves differ.</div>
+    <div class="budget-row"><div style="font-size:12.5px">Already paid</div><div class="b-amt" style="color:var(--ok)">${aud(gP)}</div></div>
+    <div class="budget-row"><div style="font-size:12.5px">Still to pay</div><div class="b-amt" style="color:var(--amb)">${aud(gT-gP)}</div></div>
+    <div class="budget-row"><div style="font-size:13px;font-weight:700">TOTAL TRIP COST (both)</div><div class="b-amt" style="font-size:15px;font-weight:700">${aud(gT)}</div></div>
     <div class="budget-row"><div style="font-size:12.5px">AW's half</div><div class="b-amt">${aud(gT-compShare)}</div></div>
-    <div class="budget-row"><div style="font-size:12.5px">VL's half</div><div class="b-amt">${aud(compShare)}</div></div>
-    <div style="font-size:10px;font-weight:700;color:var(--txL);letter-spacing:.5px;margin:13px 0 2px">THE BILLS — PAID vs STILL DUE (shared)</div>
-    <div class="budget-row"><div style="font-size:12.5px">Already paid to the properties<div style="font-size:10px;color:var(--txL)">all fronted by AW so far</div></div><div class="b-amt" style="color:var(--ok)">${aud(gP)}</div></div>
-    <div class="budget-row"><div style="font-size:12.5px">Still to pay the properties<div style="font-size:10px;color:var(--txL)">BOTH of you — mostly cash on arrival. Whoever pays it, it counts toward their half</div></div><div class="b-amt" style="color:var(--amb)">${aud(gT-gP)}</div></div>
-    <div style="font-size:10px;font-weight:700;color:var(--txL);letter-spacing:.5px;margin:13px 0 2px">SETTLING UP · VL → AW</div>
-    <div class="budget-row"><div style="font-size:12.5px">VL's share of the cost</div><div class="b-amt">${aud(compShare)}</div></div>
+    <div class="budget-row" style="border-bottom:none"><div style="font-size:12.5px">VL's half</div><div class="b-amt">${aud(compShare)}</div></div>
+    <div style="font-size:10.5px;color:var(--txL);margin-top:8px;line-height:1.5">AW's half is AUD ${(223.75).toFixed(2)} more than a straight even split, because AW covers the second Geneva night alone.</div>
+  </div>
+  <div class="card cp" style="margin-bottom:12px;border-left:3px solid var(--for)">
+    <div class="serif" style="font-size:17px;font-weight:600;color:var(--for);margin-bottom:2px">4 · Settling up · VL → AW</div>
+    <div style="font-size:11px;color:var(--txL);margin-bottom:8px">AW fronted the bills in card 1, so VL owes her half back. Anything VL pays directly on the trail comes off this.</div>
+    <div class="budget-row"><div style="font-size:12.5px">VL's half of the whole trip</div><div class="b-amt">${aud(compShare)}</div></div>
     <div class="budget-row"><div style="font-size:12.5px">VL has paid (Beem)</div><div class="b-amt" style="color:var(--ok)">− ${aud(VLPAID)}</div></div>
-    ${(()=>{const bal=compShare-VLPAID;return bal>0.5?`<div class="budget-row" style="border-bottom:none"><div style="font-size:13px;font-weight:700">VL still owes</div><div class="b-amt" style="font-weight:700;color:var(--amb)">${aud(bal)}</div></div>`:bal<-0.5?`<div class="budget-row" style="border-bottom:none"><div style="font-size:13px;font-weight:700">Overpaid — AW owes VL</div><div class="b-amt" style="font-weight:700;color:var(--it)">${aud(-bal)}</div></div>`:`<div class="budget-row" style="border-bottom:none"><div style="font-size:13px;font-weight:700">Settled ✓</div><div class="b-amt" style="font-weight:700;color:var(--ok)">AUD 0.00</div></div>`;})()}
-    <div style="font-size:10.5px;color:var(--txL);margin-top:9px;line-height:1.5">AW has fronted every bill paid so far, which is why that figure is larger than AW's own half — the surplus is VL's portion, coming back via Beem. The rest is still owed to the properties by BOTH of you, and anything VL pays directly on the trail counts toward her half and reduces what she owes.</div>
+    ${(()=>{const bal=compShare-VLPAID;return bal>0.5?`<div class="budget-row" style="border-bottom:none"><div style="font-size:13px;font-weight:700">VL still owes</div><div class="b-amt" style="font-size:15px;font-weight:700;color:var(--amb)">${aud(bal)}</div></div>`:bal<-0.5?`<div class="budget-row" style="border-bottom:none"><div style="font-size:13px;font-weight:700">Overpaid — AW owes VL</div><div class="b-amt" style="font-size:15px;font-weight:700;color:var(--it)">${aud(-bal)}</div></div>`:`<div class="budget-row" style="border-bottom:none"><div style="font-size:13px;font-weight:700">Settled ✓</div><div class="b-amt" style="font-weight:700;color:var(--ok)">AUD 0.00</div></div>`;})()}
   </div>
   ${(()=>{
     const dU=iso=>{const t=new Date();t.setHours(0,0,0,0);return Math.round((new Date(iso+"T00:00:00")-t)/864e5);};
