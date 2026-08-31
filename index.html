@@ -1111,6 +1111,7 @@ function rSplit(){
     {id:"s8",name:"Auberge la Boërne · Tré-le-Champ",night:"21 Sep · Day 9",cur:"EUR",room:225,paidRoom:225,incl:"Half-board (dinner + breakfast)",extraCur:"EUR",extra:24},
     {id:"s9",name:"Aiguille Verte · Chamonix",night:"22 Sep · Day 10 · post-trek",cur:"EUR",room:253.40,paidRoom:253.40,incl:"Apartment, room only",note:"€500 card deposit on arrival (refunded after)."},
     {id:"s10",name:"Eastwest Hôtel by Malone · Geneva",night:"23–24 Sep · pre-flight (2 nights)",cur:"AUD",room:895,paidRoom:0,when:"Pay online by 20 Sep",incl:"Double room, 4-star (breakfast ~CHF 29 extra)",cShare:223.75,note:"VL stays the night of the 23rd and leaves on the 24th, so she shares ONE night only: her half ≈ AUD 224, not half the 2-night total."},
+    {id:"a1",name:"QC Terme spa · Pré-Saint-Didier",night:"16 Sep · Day 4 rest day",cur:"EUR",room:324,paidRoom:0,when:"Pay at check-in, 14:00",incl:"Spa entry + 50-min tailor-made massage each, €162pp, VAT incl. Booked, res. PSD2026935040056495 (card was a guarantee only)"},
     {id:"s11",name:"montourdumontblanc · change fees",night:"Order 4289941 · partly refunded",cur:"EUR",room:63.51,paidRoom:63.51,when:"Settled — €187.49 refunded 24 Jun 2026",incl:"Change fee €251, of which €187.49 was REFUNDED on 24 Jun 2026 (AUD 306.86, Association TMB Passy). Only €63.51 was retained"}
   ];
   const CASH=[
@@ -1177,11 +1178,36 @@ function rSplit(){
     <div style="font-size:10.5px;color:var(--txL);margin-top:8px;line-height:1.5">AW's half is AUD ${(223.75).toFixed(2)} more than a straight even split, because AW covers the second Geneva night alone.</div>
   </div>
   <div class="card cp" style="margin-bottom:12px;border-left:3px solid var(--for)">
-    <div class="serif" style="font-size:17px;font-weight:600;color:var(--for);margin-bottom:2px">4 · Settling up · VL → AW</div>
-    <div style="font-size:11px;color:var(--txL);margin-bottom:8px">AW fronted the bills in card 1, so VL owes her half back. Anything VL pays directly on the trail comes off this.</div>
-    <div class="budget-row"><div style="font-size:12.5px">VL's half of the whole trip</div><div class="b-amt">${aud(compShare)}</div></div>
+    <div class="serif" style="font-size:17px;font-weight:600;color:var(--for);margin-bottom:2px">4 · Settling up · VL ⇄ AW</div>
+    <div style="font-size:11px;color:var(--txL);margin-bottom:8px">VL only owes her share of what has actually been <strong>paid</strong> so far. The rest is not owed by anyone yet — it gets settled as each bill is paid.</div>
+    ${(()=>{
+      let paidShareVL=0,dueShareVL=0;
+      ITEMS.forEach(it=>{const ta=it.room*RATE[it.cur]+(it.extra?it.extra*RATE[it.extraCur]:0);const frac=(it.cShare!=null&&ta>0)?it.cShare/ta:0.5;const p=it.paidRoom*RATE[it.cur];paidShareVL+=p*frac;dueShareVL+=(ta-p)*frac;});
+      const bal=paidShareVL-VLPAID;
+      const settled=bal>0.5?`<div class="budget-row" style="border-bottom:none"><div style="font-size:13px;font-weight:700">VL still owes AW</div><div class="b-amt" style="font-size:15px;font-weight:700;color:var(--amb)">${aud(bal)}</div></div>`
+        :bal<-0.5?`<div class="budget-row" style="border-bottom:none"><div style="font-size:13px;font-weight:700">VL is IN CREDIT</div><div class="b-amt" style="font-size:15px;font-weight:700;color:var(--ok)">${aud(-bal)}</div></div>`
+        :`<div class="budget-row" style="border-bottom:none"><div style="font-size:13px;font-weight:700">Square ✓</div><div class="b-amt" style="font-weight:700;color:var(--ok)">AUD 0.00</div></div>`;
+      const note=bal<-0.5?`VL has paid ${aud(VLPAID)} against ${aud(paidShareVL)} owed so far, so she is <strong>${aud(-bal)} ahead</strong>. Carry it forward against her share of the bills still to come rather than paying her back.`:`VL owes ${aud(bal)} on what has been paid so far.`;
+      return`<div style="font-size:10px;font-weight:700;color:var(--txL);letter-spacing:.5px;margin-bottom:2px">ON WHAT HAS BEEN PAID</div>
+    <div class="budget-row"><div style="font-size:12.5px">VL's share of the ${aud(gP)} already paid</div><div class="b-amt">${aud(paidShareVL)}</div></div>
     <div class="budget-row"><div style="font-size:12.5px">VL has paid (Beem)</div><div class="b-amt" style="color:var(--ok)">− ${aud(VLPAID)}</div></div>
-    ${(()=>{const bal=compShare-VLPAID;return bal>0.5?`<div class="budget-row" style="border-bottom:none"><div style="font-size:13px;font-weight:700">VL still owes</div><div class="b-amt" style="font-size:15px;font-weight:700;color:var(--amb)">${aud(bal)}</div></div>`:bal<-0.5?`<div class="budget-row" style="border-bottom:none"><div style="font-size:13px;font-weight:700">Overpaid — AW owes VL</div><div class="b-amt" style="font-size:15px;font-weight:700;color:var(--it)">${aud(-bal)}</div></div>`:`<div class="budget-row" style="border-bottom:none"><div style="font-size:13px;font-weight:700">Settled ✓</div><div class="b-amt" style="font-weight:700;color:var(--ok)">AUD 0.00</div></div>`;})()}
+    ${settled}
+    <div style="font-size:10.5px;color:var(--txM);margin-top:8px;line-height:1.5">${note}</div>
+    <div style="font-size:10px;font-weight:700;color:var(--txL);letter-spacing:.5px;margin:13px 0 2px">NOT OWED YET</div>
+    <div class="budget-row" style="border-bottom:none"><div style="font-size:12.5px">VL's share of the ${aud(gT-gP)} still to pay<div style="font-size:10px;color:var(--txL)">Settle as each bill is paid; anything she pays direct counts toward this</div></div><div class="b-amt" style="color:var(--txL)">${aud(dueShareVL)}</div></div>`;
+    })()}
+  </div>
+  <div class="card cp" style="margin-bottom:12px;border-left:3px solid var(--amb)">
+    <div class="serif" style="font-size:16px;font-weight:600;color:var(--amb);margin-bottom:2px">⚠️ Costs not yet in these totals</div>
+    <div style="font-size:11px;color:var(--txL);line-height:1.55;margin-bottom:8px">Real money that will be spent but has no confirmed price yet, so it is deliberately excluded above rather than guessed.</div>
+    ${[
+      {t:"montourdumontblanc package — unreconciled",d:"The package (order 4289941) shows €1,079.34 paid, but the four property payments recorded above only account for about AUD 1,191 of it. There is roughly AUD 570 of package cost — booking fees or a different room split — not itemised anywhere. ⚠️ This is the biggest gap. Chase the line-by-line breakdown (see To-Do)."},
+      {t:"Skyway Monte Bianco — Day 4",d:"~€59pp return, about €118 for two (≈A$97pp). Reservation is free but weather-dependent, so not booked and not counted."},
+      {t:"Courmayeur restaurants",d:"Pierre Alexis 1877 (15 Sep), Cadran Solaire (16 Sep) and La Maison de Filippo (16 Sep) are all booked but none are priced."},
+      {t:"Day 1 dinner, Les Contamines",d:"La Table d'Hôtes Savoie, or 25€pp through the hotel via Maison Noël."},
+      {t:"Geneva → Chamonix transfer",d:"Shared shuttle, not yet booked. Use the hotel's promo code AIGVCHX with Mountain Drop-offs."},
+      {t:"Food, drinks and coffees on the trail",d:"Refuge stops, the Chamonix resupply and anything bought day to day."}
+    ].map(x=>`<div style="display:flex;gap:9px;padding:6px 0;border-top:1px solid var(--bor)"><div style="color:var(--amb);flex-shrink:0">•</div><div style="flex:1"><div style="font-size:12px;font-weight:500">${x.t}</div><div style="font-size:10.5px;color:var(--txM);line-height:1.45;margin-top:1px">${x.d}</div></div></div>`).join("")}
   </div>
   ${(()=>{
     const dU=iso=>{const t=new Date();t.setHours(0,0,0,0);return Math.round((new Date(iso+"T00:00:00")-t)/864e5);};
