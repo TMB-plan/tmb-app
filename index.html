@@ -1409,6 +1409,19 @@ const TCYCLE=[
   {ph:"luteal",hd:"Luteal (~day 17-28)",push:"BUILD → EASE",txt:"Energy tapers, perceived effort and core temp rise, PMS can show late. Steady work early, then ease toward the period. Hydrate hard and protect sleep."}
 ];
 const TEX={
+  corepelvis:[
+    {n:"Couch stretch (hip flexor + quad)",s:"1×3 · 30s hold",c:"Back foot up on a couch or chair, front foot planted. Squeeze the glute of the back leg and tuck the pelvis under — that is what makes it bite. Do NOT arch the lower back to get deeper.",y:"couch stretch hip flexor quad tutorial"},
+    {n:"Abdominal activation knee float",s:"3×12",c:"On your back, knees bent, neutral spine. Exhale and float one knee up to hip level, keeping the knee angle fixed. The pelvis must not tilt or twist — that is the whole point of the exercise.",y:"abdominal activation knee float exercise"},
+    {n:"Resisted Pallof press in high kneeling",s:"2×10",c:"High kneeling, band anchored at chest height to one side. Press the hands straight out and resist the band's pull into rotation. Ribs down, glutes on, no side bend.",y:"pallof press high kneeling band"},
+    {n:"Resisted crab walks",s:"1×30",c:"Band above the knees or ankles, quarter squat, step sideways keeping tension on the band the whole way. Feet stay pointing forward, chest up, no waddle.",y:"resisted lateral band walk crab walk"},
+    {n:"Side plank",s:"2×5 · 30s hold",c:"Straight line from ear to ankle, hips lifted and stacked. Push the bottom shoulder away from the ear. Drop to knees if the hips sag — a sagging side plank trains nothing.",y:"side plank proper form tutorial"}
+  ],
+  core1:[
+    {n:"Transverse abdominis activation",s:"10 × 10s hold",c:"On your back, knees bent. Aim for a 30% contraction, not a brace. Cues: gently button up your belt · draw the lower stomach towards the spine · stop the flow of urine. Hold 10s while breathing normally. Progress to four-point kneeling, then sitting, then standing.",y:"transverse abdominis activation 30 percent"},
+    {n:"Leg slides",s:"per physio",c:"On your back, knees bent, feet on a slippery surface (socks on tiles). Find neutral spine and hold the activation. Exhale as you slide one leg away, inhale at the bottom, exhale as you bring it back.",y:"heel slides core exercise neutral spine"},
+    {n:"Bent knee fall out",s:"per physio",c:"On your back, knees bent. Exhale as you lower one knee out to the side, inhale at the end of range, exhale to return. ⚠️ Watch that the hips do not twist — that is the fault this exercise exists to catch.",y:"bent knee fall out core exercise"},
+    {n:"Leg float",s:"per physio",c:"On your back, knees bent. Exhale and lift one knee to hip level, keeping the knee angle. Inhale at the top holding the core, exhale and lower. Alternate legs.",y:"leg float dead bug progression"}
+  ],
   ankle:[
     {n:"Balance and reach",s:"3×5",c:"Stand tall on one leg, reach the other foot as far as you can and return controlled.",y:"single leg balance and reach exercise physio"},
     {n:"Seated resisted ankle eversion",s:"3×12",c:"Band round the foot, turn the sole outward slowly against the band.",y:"seated resisted ankle eversion exercise"},
@@ -1581,6 +1594,8 @@ function rTraining(){
     {icon:"🧳",title:"At-home / travel bodyweight",sub:"no-gym days",note:"No-equipment version for travel or home (New Cal etc.) — it's fine that some moves overlap the PT sessions; use a chair, bed edge or step.",arr:TEX.travel},
     {icon:"🦶",title:"Physio 1 · Ankle &amp; Foot",sub:"to 7 Jul, then optional",arr:TEX.ankle},
     {icon:"🦋",title:"Physio 2 · Lower Body (hip)",sub:"runs to the trek",arr:TEX.hip},
+    {icon:"🎯",title:"Physio 3 · Core, pelvis &amp; hips",sub:"current program · 5 Sep 2026 – 3 Sep 2027",note:"The live program from the physio app, started 5 Sep 2026 — it runs straight through the trek and a year beyond. Needs a resistance band and a couch or chair, so it packs: do it in the hotel rooms and on the rest day. Every rep is judged on whether the pelvis stays still, not on how many you get through.",arr:TEX.corepelvis},
+    {icon:"🧠",title:"Core Stage 1 · neutral spine + activation",sub:"the foundation under everything above",note:"Stage 1 from the physio handout. Find NEUTRAL SPINE first, every time: 1 · pelvis level, like a bowl of water you are not spilling · 2 · hips level · 3 · lumbar spine not flat — imagine a grape behind your lower back you must not squash · 4 · shoulder blades flat against the ribcage · 5 · neck centred and relaxed, small folded towel behind the head. ⚠️ Watch for the four compensations: bracing or squeezing the upper stomach, holding your breath, rotating the hips or back, and tensing the neck and shoulders. If any of those appear, you have gone past 30% — back off.",arr:TEX.core1},
     {icon:"🦵",title:"Leg tension / lactic legs",sub:"do often",note:"Next-day tightness is DOMS + neuromuscular tension. Blood flow, gentle mobility, hydration + sodium-led electrolytes, and not spiking load are what help.",arr:TEX.legten},
     {icon:"🧘",title:"Recovery &amp; mobility",sub:"aids multi-day hiking",arr:TEX.recovery},
     {icon:"⚡",title:"Non-negotiables",sub:"after every session",arr:TEX.nn},
